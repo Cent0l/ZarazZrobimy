@@ -36,3 +36,7 @@ System umożliwia zarządzanie inwentarzem lombardu, oferując funkcje dodawania
 - **Diagramy:** Centol może pomagać
 - **Bazy danych:** Kuba
 - **Piwo:** Adam Czaplicki 🍺
+
+###
+trello
+https://trello.com/b/kImd2CMv/zaraz-zrobimy

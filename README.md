@@ -39,4 +39,4 @@ System umożliwia zarządzanie inwentarzem lombardu, oferując funkcje dodawania
 
 ###
 trello
-https://trello.com/b/kImd2CMv/zaraz-zrobimy
+-https://trello.com/b/kImd2CMv/zaraz-zrobimy

@@ -6,7 +6,16 @@
 System umożliwia zarządzanie inwentarzem lombardu, oferując funkcje dodawania, edytowania oraz usuwania przedmiotów. Obsługuje także zmiany cen, statusu dostępności oraz przechowywanie zdjęć produktów.
 
 ## Funkcjonalności
+### 0. **Zarządzanie inwentarzem**
+- Dodawanie/usuwanie przedmiotów
+- Edycja przedmiotu:
+  - Zmiana ceny
+  - Opis ogólny
+  - Stan zużycia (od 1 do 10)
+  - Zmiana statusu dostępności
+- Obsługa zdjęć przedmiotów
 
+  
 ### 1. **System ról i uprawnień**
 - **Opis**: Aplikacja umożliwia przydzielanie ról do użytkowników (np. magazynier, kierownik) oraz zarządzanie dostępem do różnych funkcji systemu w zależności od przypisanej roli.
 - **Zakres**:

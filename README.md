@@ -27,7 +27,7 @@ System umożliwia zarządzanie inwentarzem lombardu, oferując funkcje dodawania
 
 ### Frontend:
 - Kuba
-- Adam Czaplicki *(po szklanie i na rysowanie)*
+- Adam Czaplicki 
 
 ### Interface:
 - Kamil Dawid *(tabelki + diagramy)*

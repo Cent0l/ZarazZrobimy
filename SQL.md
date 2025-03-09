@@ -1,117 +1,85 @@
-# Pawnshop Inventory Management System - Database Model
+# Database Schema
 
-## 1. Database Structure
+## Customers Table
 
-### Table `users` (Users)
-| Column        | Data Type       | Description                      |
-|--------------|----------------|----------------------------------|
-| id           | SERIAL PRIMARY KEY | Unique user ID                 |
-| username     | VARCHAR(255) UNIQUE | User login                     |
-| password_hash| VARCHAR(255)     | Hashed password                 |
-| email        | VARCHAR(255) UNIQUE | User email                      |
-| role_id      | INT             | Role ID (FK to `roles`)         |
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| customer_id | integer | primary key, auto increment, unique | Unique identifier for each customer |
+| first_name | varchar(50) | | Customer's first name |
+| last_name | varchar(50) | | Customer's last name |
+| id_type | enum | | Type of identification document provided |
+| id_number | varchar | | Identification document number |
+| registration_date | date | | Date when customer was registered in the system |
+| do_not_serve | bool | | Flag indicating if the customer should not be served |
 
-### Table `roles` (User Roles)
-| Column  | Data Type       | Description                         |
-|---------|----------------|-------------------------------------|
-| id      | SERIAL PRIMARY KEY | Unique role ID                   |
-| name    | VARCHAR(255) UNIQUE | Role name (e.g., Clerk, Manager) |
+## Roles Table
 
-### Table `items` (Inventory Items)
-| Column        | Data Type       | Description                      |
-|--------------|----------------|----------------------------------|
-| id           | SERIAL PRIMARY KEY | Unique item ID                 |
-| name         | VARCHAR(255)     | Item name                       |
-| description  | TEXT             | Item description                |
-| price        | DECIMAL(10,2)    | Item price                      |
-| condition    | INT CHECK (condition BETWEEN 1 AND 10) | Item condition (1-10) |
-| status       | VARCHAR(50)      | Availability status             |
-| created_at   | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Creation date |
-| updated_at   | TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Last update |
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| role_id | integer | primary key, auto increment, unique | Unique identifier for each role |
+| role_name | integer | unique | Name of the role |
+| description | text | nullable | Detailed description of the role |
+| permissions_level | integer | | Authorization level for the role |
+| max_buy | integer | | Maximum purchase amount authorized for this role |
 
-### Table `item_images` (Item Images)
-| Column     | Data Type       | Description                      |
-|-----------|----------------|----------------------------------|
-| id        | SERIAL PRIMARY KEY | Unique image ID                 |
-| item_id   | INT REFERENCES items(id) ON DELETE CASCADE | Related item ID |
-| url       | VARCHAR(255)     | Image path                      |
-| uploaded_by | INT REFERENCES users(id) | Uploaded by user |
-| uploaded_at | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Upload timestamp |
+## Employees Table
 
-### Table `item_history` (Item Change History)
-| Column     | Data Type       | Description                      |
-|------------|----------------|----------------------------------|
-| id         | SERIAL PRIMARY KEY | Unique history ID               |
-| item_id    | INT REFERENCES items(id) | Related item ID |
-| user_id    | INT REFERENCES users(id) | User who made changes |
-| action     | VARCHAR(50)      | Action type (add, edit, delete) |
-| timestamp  | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Change timestamp |
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| employee_id | integer | primary key, auto increment, unique | Unique identifier for each employee |
+| login | varchar(50) | | Employee's login username |
+| password_hash | varchar(255) | | Hashed password for authentication |
+| first_name | varchar(50) | | Employee's first name |
+| last_name | varchar(50) | | Employee's last name |
+| rank_id | integer | foreign key to Roles.role_id | Employee's assigned role |
+| hire_date | date | | Date when employee was hired |
+| adress | varchar(100) | | Employee's residential address |
+| phone_number | varchar(20) | | Employee's contact phone number |
+| email | varchar(50) | nullable | Employee's email address |
+| status | enum | | Current employment status |
 
-### Table `notifications` (Notifications)
-| Column      | Data Type       | Description                      |
-|------------|----------------|----------------------------------|
-| id         | SERIAL PRIMARY KEY | Unique notification ID          |
-| user_id    | INT REFERENCES users(id) | Notification recipient |
-| message    | TEXT             | Notification message            |
-| is_read    | BOOLEAN DEFAULT FALSE | Read status                    |
-| created_at | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Creation date |
+## Items Table
 
-### Table `reports` (Reports)
-| Column      | Data Type       | Description                      |
-|------------|----------------|----------------------------------|
-| id         | SERIAL PRIMARY KEY | Unique report ID                |
-| user_id    | INT REFERENCES users(id) | Report generator ID         |
-| type       | VARCHAR(50)      | Report type                     |
-| created_at | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Report timestamp |
-| file_path  | VARCHAR(255)     | Report file path                |
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| item_id | integer | primary key, auto increment, unique | Unique identifier for each item |
+| category_id | integer | foreign key to Categories.category_id | Category the item belongs to |
+| description | text | nullable | Detailed description of the item |
+| serial_number | integer | nullable | Item's serial number if available |
+| brand | varchar | nullable | Brand or manufacturer of the item |
+| model | varchar | nullable | Model name or number of the item |
+| condition | varchar | nullable | Physical condition of the item |
+| bought_for | decimal | | Amount paid to acquire the item |
+| asking_price | decimal | | Selling price of the item |
+| reported_stolen | bool | | Flag indicating if item was reported as stolen |
 
-### Table `sessions` (Login Sessions)
-| Column     | Data Type       | Description                      |
-|------------|----------------|----------------------------------|
-| id         | SERIAL PRIMARY KEY | Unique session ID               |
-| user_id    | INT REFERENCES users(id) | User ID |
-| token      | VARCHAR(255)     | Session token                   |
-| created_at | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Start time |
-| expires_at | TIMESTAMP       | Expiration time                 |
+## Transactions Table
 
----
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| transaction_id | integer | primary key, auto increment, unique | Unique identifier for each transaction |
+| customer_id | integer | nullable, foreign key to Customers.customer_id | Customer involved in the transaction |
+| employee_id | integer | foreign key to Employees.employee_id | Employee who processed the transaction |
+| transaction_date | date | | Date when transaction occurred |
+| transaction_type | enum | | Type of transaction (purchase, sale, pawn, etc.) |
+| total_amount | decimal | | Total monetary value of the transaction |
 
-## 2. UML Diagrams
+## Transaction_Items Table
 
-### Use Case Diagram
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| transaction_item_id | integer | primary key, auto increment, unique | Unique identifier for each transaction item |
+| transaction_id | integer | foreign key to Transactions.transaction_id | Transaction this item is part of |
+| item_id | integer | foreign key to Items.item_id | Item involved in this transaction |
+| price | decimal | | Price of the item in this transaction |
+| pawn_duration_days | integer | | Duration of pawn in days (for pawn transactions) |
+| interest_rate | integer | | Interest rate applied (for pawn transactions) |
+| expiry_date | integer | | Date when pawn expires (for pawn transactions) |
 
-#### Actors:
-1. **Clerk** – Manages items, adds/edits/deletes.
-2. **Manager** – Approves changes and generates reports.
-3. **Image Uploader** – Adds item images.
+## Categories Table
 
-**Main Use Cases:**
-- User login
-- Add a new item
-- Edit an item (change price, description, condition, status)
-- Add/remove item images
-- View item history
-- Generate reports
-- Send notifications for important changes
-- Search and filter items
-- Manage users and assign roles
-
-### ERD (Entity-Relationship Diagram)
-**Entities:**
-- `users` ←→ `roles` (1:N)
-- `users` ←→ `items` (1:N, user adds an item)
-- `items` ←→ `item_images` (1:N)
-- `items` ←→ `item_history` (1:N)
-- `users` ←→ `item_history` (1:N, who modified the item)
-- `users` ←→ `reports` (1:N, who generates the report)
-- `users` ←→ `notifications` (1:N, who receives notifications)
-- `users` ←→ `sessions` (1:N, user sessions)
-
-### Sequence Diagram (Login Process)
-1. User enters username and password.
-2. System checks credentials in `users` table.
-3. If valid, generates session token (`sessions`).
-4. User gains system access.
-5. If invalid, an error message is displayed.
-
----
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| category_id | integer | primary key, auto increment, unique | Unique identifier for each category |
+| category_name | varchar(50) | | Name of the item category |
+| description | text | | Detailed description of the category |

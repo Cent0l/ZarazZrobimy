@@ -1,0 +1,21 @@
+User Stories:
+
+Zarządzanie stanem magazynowym:
+1. Jako pracownik lombardu chcę mieć możliwość przeglądania listy wszystkich przedmiotów w magazynie, aby szybko sprawdzić dostępność.
+2. Jako pracownik lombardu chcę mieć możliwość filtrowania i wyszukiwania przedmiotów, aby łatwo znaleźć konkretne rzeczy.
+
+Dodawanie przedmiotów:
+1. Jako pracownik lombardu chcę móc dodać nowy przedmiot do systemu, aby zarejestrować go w bazie.
+2. Jako pracownik lombardu chcę przypisać nowo dodany przedmiot do konkretnego klienta, aby mieć informacje o właścicielu zastawu.
+3. Jako pracownik lombardu chcę móc dodać zdjęcia przedmiotu, aby ułatwić jego identyfikację.
+
+Oznaczanie statusu przedmiotów:
+1. Jako pracownik lombardu chcę móc oznaczyć przedmiot jako „zastawiony”, aby wiedzieć, że nie jest on jeszcze na sprzedaż.
+2. Jako pracownik lombardu chcę móc oznaczyć przedmiot jako „na sprzedaż”, aby mógł być wystawiony na wystawę.
+3. Jako pracownik lombardu chcę móc oznaczyć przedmiot jako „sprzedany”, aby aktualizować stan magazynowy.
+
+Sprzedaż i zwrot przedmiotów:
+1. Jako pracownik lombardu chcę móc oznaczyć zastawiony przedmiot jako „odebrany”, gdy klient go wykupi.
+2. Jako pracownik lombardu chcę móc dodać cenę sprzedaży przedmiotu, aby mieć historię transakcji.
+3. Jako pracownik lombardu chcę móc zobaczyć historię sprzedanych przedmiotów, aby analizować sprzedaż.
+

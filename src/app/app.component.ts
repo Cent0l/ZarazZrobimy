@@ -7,7 +7,12 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterModule, LoginPageComponent, DashboardComponent, CommonModule],
+  imports: [
+    RouterModule,
+    LoginPageComponent,
+    DashboardComponent,
+    CommonModule
+  ],
   template: `
     <div class="app-container">
       <app-login

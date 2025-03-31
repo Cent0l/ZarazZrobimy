@@ -26,6 +26,13 @@
               📊 Raporty i statystyki
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link py-2 px-3 rounded" style="cursor: pointer; text-decoration: none; color: black;"
+               [ngClass]="{'active text-white bg-primary': activeComponent === 'add-item'}"
+               (click)="activeComponent = 'add-item'">
+              ➕ Dodaj przedmioty
+            </a>
+          </li>
           <button class="btn btn-danger mt-5 w-max" (click)="logout()">Wyloguj się</button>
         </ul>
       </div>
@@ -33,6 +40,7 @@
         <app-inventory *ngIf="activeComponent === 'inventory'"></app-inventory>
         <app-history *ngIf="activeComponent === 'history'"></app-history>
         <app-reports *ngIf="activeComponent === 'reports'"></app-reports>
+        <app-add-item *ngIf="activeComponent === 'add-item'"></app-add-item>
       </div>
     </div>
   </div>

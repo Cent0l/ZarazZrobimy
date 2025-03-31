@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { InventoryComponent } from '../inventory/inventory.component';
 import { HistoryComponent } from '../history/history.component';
 import { ReportsComponent } from '../reports/reports.component';
+import { AddItemComponent } from '../add-item/add-item.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,7 +14,8 @@ import { ReportsComponent } from '../reports/reports.component';
     RouterModule,
     InventoryComponent,
     HistoryComponent,
-    ReportsComponent
+    ReportsComponent,
+    AddItemComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']

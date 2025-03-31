@@ -1,37 +1,127 @@
 <div class="container mt-5">
   <h2 class="text-center mb-4">Inwentarz lombardu</h2>
-  <table class="table table-striped table-bordered">
-    <thead class="thead-dark">
-    <tr>
-      <th>ID</th>
-      <th>Model</th>
-      <th>Marka</th>
-      <th>Opis</th>
-      <th>Stan</th>
-      <th>Cena zakupu</th>
-      <th>Cena sprzedaży</th>
-      <th>Czy kradziony?</th>
-      <th>Akcja</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let item of inventoryData">
-      <td>{{ item.id }}</td>
-      <td>{{ item.model }}</td>
-      <td>{{ item.brand }}</td>
-      <td>{{ item.description }}</td>
-      <td>{{ item.condition }}</td>
-      <td>{{item.bought_for | number:'1.2-2'}} PLN</td>
-      <td>{{item.asking_price | number:'1.2-2'}} PLN</td>
-      <td>
-          <span [class.text-danger]="item.reported_stolen">
-            {{ item.reported_stolen ? 'Kradzione' : 'Nie' }}
+  <div class="table-responsive rounded">
+    <table class="table table-striped table-bordered table-hover">
+      <thead class="table-dark">
+      <tr>
+        <th (click)="sort('brand')" class="sortable-header">
+          Marka
+          <span *ngIf="sortColumn === 'brand'" class="ms-1">
+            {{ sortDirection === 'asc' ? '↑' : '↓' }}
           </span>
-      </td>
-      <td>
-        <button (click)="markAsSold(item)" class="btn btn-danger">Sprzedane</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+        </th>
+        <th (click)="sort('model')" class="sortable-header">
+          Model
+          <span *ngIf="sortColumn === 'model'" class="ms-1">
+            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+          </span>
+        </th>
+        <th (click)="sort('description')" class="sortable-header">
+          Opis przedmiotu
+          <span *ngIf="sortColumn === 'description'" class="ms-1">
+            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+          </span>
+        </th>
+        <th (click)="sort('condition')" class="sortable-header">
+          Stan
+          <span *ngIf="sortColumn === 'condition'" class="ms-1">
+            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+          </span>
+        </th>
+        <th (click)="sort('bought_for')" class="sortable-header">
+          Cena zakupu
+          <span *ngIf="sortColumn === 'bought_for'" class="ms-1">
+            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+          </span>
+        </th>
+        <th (click)="sort('asking_price')" class="sortable-header">
+          Sugerowana cena
+          <span *ngIf="sortColumn === 'asking_price'" class="ms-1">
+            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+          </span>
+        </th>
+        <th (click)="sort('reported_stolen')" class="sortable-header">
+          Kradzione?
+          <span *ngIf="sortColumn === 'reported_stolen'" class="ms-1">
+            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+          </span>
+        </th>
+        <th>Akcje</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of inventoryData">
+        <td>{{ item.brand }}</td>
+        <td>{{ item.model }}</td>
+        <td>{{ item.description }}</td>
+        <td>
+          <span data-bs-toggle="tooltip" [attr.data-bs-title]="item.condition" class="cursor-help">
+            <ng-container [ngSwitch]="getConditionRating(item.condition)">
+              <span *ngSwitchCase="5" class="text-warning">⭐⭐⭐⭐⭐</span>
+              <span *ngSwitchCase="4" class="text-warning">⭐⭐⭐⭐</span>
+              <span *ngSwitchCase="3" class="text-warning">⭐⭐⭐</span>
+              <span *ngSwitchCase="2" class="text-warning">⭐⭐</span>
+              <span *ngSwitchCase="1" class="text-warning">⭐</span>
+              <span *ngSwitchDefault>{{ item.condition }}</span>
+            </ng-container>
+          </span>
+        </td>
+        <td class="text-nowrap">{{ item.bought_for | number:'1.2-2' }} PLN</td>
+        <td class="text-nowrap">{{ item.asking_price | number:'1.2-2' }} PLN</td>
+        <td>
+          <span [class.text-danger]="item.reported_stolen" [class.text-success]="!item.reported_stolen">
+            {{ item.reported_stolen ? 'Tak' : 'Nie' }}
+          </span>
+        </td>
+        <td>
+          <button (click)="openSaleModal(item)" class="btn btn-danger btn-sm">
+            <i class="bi bi-cash-stack"></i> Sprzedane
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <button (click)="resetSort()" class="btn btn-outline-secondary btn-sm mb-3">
+      <i class="bi bi-arrow-counterclockwise"></i> Resetuj sortowanie
+    </button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="saleModal" tabindex="-1" aria-labelledby="saleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="saleModalLabel">Sprzedaż przedmiotu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="selectedItem" class="mb-4">
+          <h5 class="mb-3">{{ selectedItem.brand }} {{ selectedItem.model }}</h5>
+          <p class="mb-1"><strong>Opis:</strong> {{ selectedItem.description }}</p>
+          <p class="mb-1"><strong>Cena zakupu:</strong> {{ selectedItem.bought_for | number:'1.2-2' }} PLN</p>
+          <p class="mb-3"><strong>Sugerowana cena:</strong> {{ selectedItem.asking_price | number:'1.2-2' }} PLN</p>
+
+          <div class="mb-3">
+            <label for="finalPrice" class="form-label">Rzeczywista cena sprzedaży (PLN)</label>
+            <input type="number" class="form-control" id="finalPrice" [(ngModel)]="saleData.finalPrice" step="0.01">
+          </div>
+
+          <div class="mb-3">
+            <label for="soldBy" class="form-label">Sprzedający</label>
+            <input type="text" class="form-control" id="soldBy" [(ngModel)]="saleData.soldBy" placeholder="Wprowadź imię">
+          </div>
+
+          <div class="mb-3">
+            <label for="saleDate" class="form-label">Data sprzedaży</label>
+            <input type="date" class="form-control" id="saleDate" [(ngModel)]="saleData.saleDate">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+        <button type="button" class="btn btn-primary" (click)="markAsSold()">Zapisz sprzedaż</button>
+      </div>
+    </div>
+  </div>
 </div>

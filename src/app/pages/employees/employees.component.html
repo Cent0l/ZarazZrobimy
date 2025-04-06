@@ -1,0 +1,138 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-4">👥 Lista pracowników👥 </h2>
+
+  <div *ngIf="isLoading" class="alert alert-info text-center">Ładowanie danych...</div>
+  <div *ngIf="error" class="alert alert-danger text-center">{{error}}</div>
+  <div *ngIf="!isLoading && !error && employees.length === 0" class="alert alert-warning text-center">
+    Brak pracowników w systemie.
+  </div>
+
+  <div *ngIf="employees.length > 0">
+    <div class="table-responsive rounded">
+      <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+          <th>Imię i Nazwisko</th>
+          <th>Login</th>
+          <th>Rola</th>
+          <th>Limit transakcji</th>
+          <th>Data zatrudnienia</th>
+          <th>Email</th>
+          <th>Telefon</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let employee of employees">
+          <td>{{employee.first_name}} {{employee.last_name}}</td>
+          <td>{{employee.login}}</td>
+          <td>
+            <span class="badge"
+                  [ngClass]="{
+                    'bg-danger': employee.rank_id === 1,
+                    'bg-warning text-dark': employee.rank_id === 2,
+                    'bg-success': employee.rank_id === 3,
+                    'bg-info text-dark': employee.rank_id === 4
+                  }">
+              {{getRoleName(employee.rank_id)}}
+            </span>
+          </td>
+          <td class="text-nowrap">{{getTransactionLimit(employee.rank_id) | number:'1.0-0'}} PLN</td>
+          <td>{{getFormattedDate(employee.hire_date)}}</td>
+          <td>{{employee.email}}</td>
+          <td>{{employee.phone_number}}</td>
+          <td>
+            <span class="badge"
+                  [ngClass]="{
+                    'bg-success': employee.status === 'AKTYWNY',
+                    'bg-secondary': employee.status !== 'AKTYWNY'
+                  }">
+              {{employee.status}}
+            </span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- Przycisk do otwierania modala - dodaj w dowolnym miejscu, np. przed tabelą -->
+<div class="mb-3">
+  <button class="btn btn-primary" (click)="openAddModal()">
+    <i class="bi bi-plus-circle"></i> Dodaj nowego pracownika
+  </button>
+</div>
+
+<!-- Modal do dodawania pracowników -->
+<div class="modal fade" [class.show]="showAddModal" [style.display]="showAddModal ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Dodaj nowego pracownika</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeAddModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="addEmployee()">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="firstName" class="form-label">Imię</label>
+              <input type="text" class="form-control" id="firstName" [(ngModel)]="newEmployee.first_name" name="firstName" required>
+            </div>
+            <div class="col-md-6">
+              <label for="lastName" class="form-label">Nazwisko</label>
+              <input type="text" class="form-control" id="lastName" [(ngModel)]="newEmployee.last_name" name="lastName" required>
+            </div>
+            <div class="col-md-6">
+              <label for="login" class="form-label">Login</label>
+              <input type="text" class="form-control" id="login" [(ngModel)]="newEmployee.login" name="login" required>
+            </div>
+            <div class="col-md-6">
+              <label for="password" class="form-label">Hasło</label>
+              <input type="password" class="form-control" id="password" [(ngModel)]="newEmployee.password_hash" name="password" required>
+            </div>
+            <div class="col-md-6">
+              <label for="role" class="form-label">Rola</label>
+              <select class="form-select" id="role" [(ngModel)]="newEmployee.rank_id" name="role" required>
+                <option *ngFor="let role of roles" [value]="role.role_id">{{role.role_name}}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="hireDate" class="form-label">Data zatrudnienia</label>
+              <input type="date" class="form-control" id="hireDate" [(ngModel)]="newEmployee.hire_date" name="hireDate" required>
+            </div>
+            <div class="col-12">
+              <label for="address" class="form-label">Adres</label>
+              <input type="text" class="form-control" id="address" [(ngModel)]="newEmployee.adress" name="address">
+            </div>
+            <div class="col-md-6">
+              <label for="phone" class="form-label">Telefon</label>
+              <input type="tel" class="form-control" id="phone" [(ngModel)]="newEmployee.phone_number" name="phone">
+            </div>
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" [(ngModel)]="newEmployee.email" name="email" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Status</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="statusActive" value="AKTYWNY"
+                       [(ngModel)]="newEmployee.status" name="status" checked>
+                <label class="form-check-label" for="statusActive">Aktywny</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="statusInactive" value="NIEAKTYWNY"
+                       [(ngModel)]="newEmployee.status" name="status">
+                <label class="form-check-label" for="statusInactive">Nieaktywny</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer mt-3">
+            <button type="button" class="btn btn-secondary" (click)="closeAddModal()">Anuluj</button>
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showAddModal" [style.display]="showAddModal ? 'block' : 'none'"></div>

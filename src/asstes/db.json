@@ -195,6 +195,20 @@
       "reported_stolen": true,
       "sold_by": "",
       "sales_data": ""
+    },
+    {
+      "id": "f31a",
+      "category_id": "3",
+      "description": "test",
+      "serial_number": 247827140,
+      "brand": "gasnica",
+      "model": "gasnica",
+      "condition": "Dostateczny",
+      "bought_for": 123,
+      "asking_price": 156,
+      "reported_stolen": false,
+      "sold_by": "",
+      "sales_data": ""
     }
   ],
   "sold": [
@@ -239,6 +253,97 @@
       "reported_stolen": false,
       "sold_by": "Mateusz",
       "sales_data": "2025-03-31"
+    }
+  ],
+  "employees": [
+    {
+      "employee_id": 1,
+      "login": "szef",
+      "password_hash": "!@*)$GH&(@!DBU",
+      "first_name": "Janusz",
+      "last_name": "Nowak",
+      "rank_id": 1,
+      "hire_date": "2020-01-01",
+      "adress": "Lazurowa 13, Warszawa",
+      "phone_number": "777777777",
+      "email": "szefu@lomabrd.pl",
+      "status": "AKTYWNY",
+      "id": "878b"
+    },
+    {
+      "employee_id": 2,
+      "login": "kowalskijan12",
+      "password_hash": "UNBSOFAGABN@",
+      "first_name": "Jan",
+      "last_name": "Kowalski",
+      "rank_id": 2,
+      "hire_date": "2022-12-12",
+      "adress": "Sloneczna 4, Olsztyn",
+      "phone_number": "580123585",
+      "email": "kowalskijan1@lombard.pl",
+      "status": "AKTYWNY"
+    },
+    {
+      "id": "15c1",
+      "employee_id": 3,
+      "login": "jakubnnn",
+      "password_hash": "FSAFNBUOASOUBJF",
+      "first_name": "Jakub",
+      "last_name": "Nowaczkiewicz",
+      "rank_id": 3,
+      "hire_date": "2025-04-04",
+      "adress": "Dworcowa 23, Gdańsk",
+      "phone_number": "2135913231",
+      "email": "nowaczkiewicz@lombard.pl",
+      "status": "AKTYWNY"
+    },
+    {
+      "id": "a98c",
+      "employee_id": 4,
+      "login": "arturito",
+      "password_hash": "AWEWQ",
+      "first_name": "Artur",
+      "last_name": "Krasucki",
+      "rank_id": 4,
+      "hire_date": "2025-03-21",
+      "adress": "Nienzany",
+      "phone_number": "123544000",
+      "email": "artur@lombard.pl",
+      "status": "AKTYWNY"
+    }
+  ],
+  "roles": [
+    {
+      "role_id": 1,
+      "role_name": "Własciciel",
+      "desciption": "CEO lombardu, posiada wszystkie prawa i dostępy do strony",
+      "permissions_level": 4,
+      "max_buy": 10000000,
+      "id": "71f4"
+    },
+    {
+      "role_id": 2,
+      "role_name": "Kierownik",
+      "desciption": "Kierownik lombardu, moze zarzadzac pracownikami i kupowac za wiecej",
+      "permissions_level": 3,
+      "max_buy": 1000000,
+      "id": "bad5"
+    },
+    {
+      "role_id": 3,
+      "role_name": "Pracownik z stażem 2 lata+",
+      "desciption": "Pracownik z dłuższym doswiadczeniem, większy limit zakupów",
+      "permissions_level": 2,
+      "max_buy": 100000,
+      "id": "0ad2"
+    },
+    {
+      "role_id": 4,
+      "role_name": "Nowy Pracownik",
+      "desciption": "Pracownik bez doswiadczenia w pracy w lombardzie (mniej niz dwa lata) posiada limit 10000 PLN na transakcje",
+      "permissions_level": 1,
+      "max_buy": 10000,
+      "id": "6fab"
     }
   ]
 }

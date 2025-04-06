@@ -1,0 +1,34 @@
+.table-responsive {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  font-weight: bold;
+}
+
+.badge {
+  padding: 0.5em 0.7em;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+/* Style dla modala */
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+.form-label {
+  font-weight: 500;
+}
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 1rem auto;
+  }
+}

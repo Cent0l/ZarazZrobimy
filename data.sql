@@ -1,7 +1,8 @@
-INSERT INTO Roles (role_name, description, permissions_level, max_buy) VALUES
-    ('Kierownik', 'Zarządza oddziałem lombardu', 5, 20),
-    ('Specjalista', 'Przyjmuje przedmioty i obsługuje klientów', 3, 10),
-    ('Kasjer', 'Obsługuje płatności i wydania', 2, 5);
+INSERT INTO Roles (role_id, role_name, description, permissions_level, max_buy) VALUES
+    (2,'Własciciel', 'CEO lombardu, posiada wszystkie prawa i dostępy do strony', 4, 10000000),
+    (3,'Specjalista', 'Kierownik lombardu, moze zarzadzac pracownikami i kupowac za wiecej', 3, 1000000),
+    (4,'Pracownik z stażem 2 lata+', 'Pracownik z dłuższym doswiadczeniem, większy limit zakupów', 2, 100000),
+    (5,'Nowy Pracownik', 'Obsługuje płatności i wydania', 1, 10000);
 
 INSERT INTO Employees (login, password_hash, first_name, last_name, role_id, hire_date, status) VALUES
         ('j.kowalski', 'hash123', 'Jan', 'Kowalski', 1, '2023-01-10', 'active'),

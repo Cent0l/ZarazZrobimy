@@ -6,6 +6,7 @@ import { HistoryComponent } from '../history/history.component';
 import { ReportsComponent } from '../reports/reports.component';
 import { AddItemComponent } from '../add-item/add-item.component';
 import {EmployeesComponent} from '../employees/employees.component';
+import { CustomersComponent } from '../customers/customers.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,7 +18,8 @@ import {EmployeesComponent} from '../employees/employees.component';
     HistoryComponent,
     ReportsComponent,
     AddItemComponent,
-    EmployeesComponent
+    EmployeesComponent,
+    CustomersComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']

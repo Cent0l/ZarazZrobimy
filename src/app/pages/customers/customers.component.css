@@ -1,0 +1,28 @@
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal-backdrop {
+  opacity: 0.5;
+}
+
+.close {
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+}
+.sortable-header:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}

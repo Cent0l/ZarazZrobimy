@@ -9,6 +9,12 @@
         <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
           <form style="width: 23rem;" (ngSubmit)="login()">
             <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Logowanie do systemu zarządzania lombardem</h3>
+
+            <!-- Komunikat o błędzie -->
+            <div *ngIf="error" class="alert alert-danger mb-3">
+              {{error}}
+            </div>
+
             <div class="form-floating mb-4">
               <input type="text" class="form-control" id="username" placeholder="Login" [(ngModel)]="username" name="username" required>
               <label for="username">Login</label>
@@ -18,7 +24,10 @@
               <label for="password">Hasło</label>
             </div>
             <div class="pt-1 mb-4">
-              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit">Zaloguj się</button>
+              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" [disabled]="loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{loading ? 'Logowanie...' : 'Zaloguj się'}}
+              </button>
             </div>
           </form>
         </div>

@@ -14,6 +14,13 @@
           </li>
           <li class="nav-item">
             <a class="nav-link py-2 px-3 rounded" style="cursor: pointer; text-decoration: none; color: black;"
+               [ngClass]="{'active text-white bg-primary': activeComponent === 'add-item'}"
+               (click)="activeComponent = 'add-item'">
+              ➕ Dodaj kupiony przedmiot
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link py-2 px-3 rounded" style="cursor: pointer; text-decoration: none; color: black;"
                [ngClass]="{'active text-white bg-primary': activeComponent === 'history'}"
                (click)="activeComponent = 'history'">
               📜 Historia operacji
@@ -28,27 +35,28 @@
           </li>
           <li class="nav-item">
             <a class="nav-link py-2 px-3 rounded" style="cursor: pointer; text-decoration: none; color: black;"
-               [ngClass]="{'active text-white bg-primary': activeComponent === 'add-item'}"
-               (click)="activeComponent = 'add-item'">
-              ➕ Dodaj przedmioty
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link py-2 px-3 rounded" style="cursor: pointer; text-decoration: none; color: black;"
                [ngClass]="{'active text-white bg-primary': activeComponent === 'employees'}"
                (click)="activeComponent = 'employees'">
               👥 Zarządzanie pracownikami
             </a>
           </li>
-          <button class="btn btn-danger mt-5 w-max" (click)="logout()">Wyloguj się</button>
+          <li class="nav-item">
+            <a class="nav-link py-2 px-3 rounded" style="cursor: pointer; text-decoration: none; color: black;"
+               [ngClass]="{'active text-white bg-primary': activeComponent === 'customers'}"
+               (click)="activeComponent = 'customers'">
+              🤝 Lista Klientów
+            </a>
+          </li>
+          <button class="btn btn-danger mt-5 w-max" (click)="logout()">⏻ Wyloguj się</button>
         </ul>
       </div>
       <div class="col-sm-9 p-5 bg-white overflow-auto">
         <app-inventory *ngIf="activeComponent === 'inventory'"></app-inventory>
+        <app-add-item *ngIf="activeComponent === 'add-item'"></app-add-item>
         <app-history *ngIf="activeComponent === 'history'"></app-history>
         <app-reports *ngIf="activeComponent === 'reports'"></app-reports>
-        <app-add-item *ngIf="activeComponent === 'add-item'"></app-add-item>
         <app-employees *ngIf="activeComponent === 'employees'"></app-employees>
+        <app-customers *ngIf="activeComponent === 'customers'"></app-customers>
       </div>
     </div>
   </div>

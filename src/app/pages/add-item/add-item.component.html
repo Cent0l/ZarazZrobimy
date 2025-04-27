@@ -1,66 +1,159 @@
-<h2 class="text-center mb-0">➕Dodaj nowy przedmiot do inwentarza📦</h2>
+<h2 class="text-center mb-3">➕ Nowa transakcja zakupu 💰</h2>
 <div class="container mt-3">
   <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="card shadow-sm">
+    <div class="col-lg-10">
+      <div class="card shadow-sm mb-4">
         <div class="card-body">
           <form (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
-            <!-- Kategoria -->
-            <div class="mb-3">
-              <label for="category" class="form-label">Kategoria</label>
-              <select class="form-select" id="category" [(ngModel)]="newItem.category_id" name="category_id" required>
-                <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+
+            <!-- Sekcja klienta -->
+            <h4 class="mb-3">Dane klienta</h4>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="existingCustomer" [(ngModel)]="useExistingCustomer" name="useExistingCustomer">
+              <label class="form-check-label" for="existingCustomer">Wybierz istniejącego klienta</label>
+            </div>
+
+            <!-- Istniejący klient - nowa lista rozwijana -->
+            <div *ngIf="useExistingCustomer" class="mb-4">
+              <label for="customerId" class="form-label">Wybierz klienta *</label>
+
+              <!-- Loader podczas ładowania listy klientów -->
+              <div *ngIf="isLoadingCustomers" class="d-flex align-items-center mb-2">
+                <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                  <span class="visually-hidden">Ładowanie...</span>
+                </div>
+                <span>Pobieranie listy klientów...</span>
+              </div>
+
+              <!-- Komunikat o błędzie -->
+              <div *ngIf="customerLoadError" class="alert alert-danger py-2">
+                {{ customerLoadError }}
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="loadCustomers()">Spróbuj ponownie</button>
+              </div>
+
+              <!-- Lista klientów -->
+              <select class="form-select" id="customerId" [(ngModel)]="customerId" name="customerId" required
+                      [ngClass]="{'is-invalid': isCustomerBlocked(), 'border-danger': isCustomerBlocked()}"
+                      [attr.aria-describedby]="isCustomerBlocked() ? 'customerBlockedFeedback' : null">
+                <option [ngValue]="null">Wybierz klienta...</option>
+                <option *ngFor="let customer of customers" [ngValue]="customer.id"
+                        [ngClass]="{'text-danger': customer.doNotServe}">
+                  {{ customer.firstName }} {{ customer.lastName }}
+                  <span class="text-muted small">- {{ customer.idNumber }}</span>
+                </option>
               </select>
+
+              <!-- Komunikat ostrzegawczy gdy klient jest zablokowany -->
+              <div *ngIf="isCustomerBlocked()" class="invalid-feedback" id="customerBlockedFeedback">
+                <strong>UWAGA:</strong> Ten klient jest na liście osób, od których nie przyjmujemy przedmiotów!
+              </div>
             </div>
 
-            <!-- Numer seryjny -->
-            <div class="mb-3">
-              <label for="serial" class="form-label">Numer seryjny</label>
-              <input type="number" class="form-control" id="serial" [(ngModel)]="newItem.serial_number" name="serial_number">
+            <!-- Nowy klient -->
+            <div *ngIf="!useExistingCustomer" class="mb-4">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="firstName" class="form-label">Imię *</label>
+                  <input type="text" class="form-control" id="firstName" [(ngModel)]="newCustomer.firstName" name="firstName" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName" class="form-label">Nazwisko *</label>
+                  <input type="text" class="form-control" id="lastName" [(ngModel)]="newCustomer.lastName" name="lastName" required>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="idType" class="form-label">Typ dokumentu *</label>
+                  <select class="form-select" id="idType" [(ngModel)]="newCustomer.idType" name="idType" required>
+                    <option *ngFor="let type of idTypes" [value]="type.value">{{ type.label }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="idNumber" class="form-label">Numer dokumentu *</label>
+                  <input type="text" class="form-control" id="idNumber" [(ngModel)]="newCustomer.idNumber" name="idNumber" required>
+                </div>
+              </div>
             </div>
 
-            <!-- Marka -->
-            <div class="mb-3">
-              <label for="brand" class="form-label">Marka *</label>
-              <input type="text" class="form-control" id="brand" [(ngModel)]="newItem.brand" name="brand" required>
+            <hr class="my-4">
+
+            <!-- Sekcja przedmiotów -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4>Przedmioty do zakupu</h4>
+              <button type="button" class="btn btn-outline-primary btn-sm" (click)="addItem()">
+                <i class="bi bi-plus-circle me-1"></i> Dodaj przedmiot
+              </button>
             </div>
 
-            <!-- Model -->
-            <div class="mb-3">
-              <label for="model" class="form-label">Model *</label>
-              <input type="text" class="form-control" id="model" [(ngModel)]="newItem.model" name="model" required>
+            <div *ngFor="let item of transaction.items; let i = index" class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="card-title mb-0">Przedmiot #{{i+1}}</h5>
+                  <button type="button" class="btn btn-outline-danger btn-sm" *ngIf="transaction.items.length > 1" (click)="removeItem(i)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="name{{i}}" class="form-label">Nazwa przedmiotu *</label>
+                    <input type="text" class="form-control" id="name{{i}}" [(ngModel)]="item.name" name="name{{i}}" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="category{{i}}" class="form-label">Kategoria *</label>
+                    <select class="form-select" id="category{{i}}" [(ngModel)]="item.categoryId" name="categoryId{{i}}" required>
+                      <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="brand{{i}}" class="form-label">Marka *</label>
+                    <input type="text" class="form-control" id="brand{{i}}" [(ngModel)]="item.brand" name="brand{{i}}" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="model{{i}}" class="form-label">Model *</label>
+                    <input type="text" class="form-control" id="model{{i}}" [(ngModel)]="item.model" name="model{{i}}" required>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="serialNumber{{i}}" class="form-label">Numer seryjny</label>
+                    <input type="text" class="form-control" id="serialNumber{{i}}" [(ngModel)]="item.serialNumber" name="serialNumber{{i}}">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="condition{{i}}" class="form-label">Stan *</label>
+                    <select class="form-select" id="condition{{i}}" [(ngModel)]="item.condition" name="condition{{i}}" required>
+                      <option *ngFor="let cond of conditions" [value]="cond">{{ cond }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="description{{i}}" class="form-label">Opis</label>
+                  <textarea class="form-control" id="description{{i}}" [(ngModel)]="item.description" name="description{{i}}" rows="2"></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label for="boughtFor{{i}}" class="form-label">Cena zakupu (PLN) *</label>
+                  <input type="number" step="0.01" class="form-control" id="boughtFor{{i}}" [(ngModel)]="item.boughtFor" name="boughtFor{{i}}" required>
+                </div>
+              </div>
             </div>
 
-            <!-- Opis -->
-            <div class="mb-3">
-              <label for="description" class="form-label">Opis</label>
-              <textarea class="form-control" id="description" [(ngModel)]="newItem.description" name="description" rows="3"></textarea>
+            <!-- Notatki do transakcji -->
+            <div class="mb-4">
+              <label for="notes" class="form-label">Uwagi do transakcji</label>
+              <textarea class="form-control" id="notes" [(ngModel)]="transaction.notes" name="notes" rows="3"></textarea>
             </div>
 
-            <!-- Stan -->
-            <div class="mb-3">
-              <label for="condition" class="form-label">Stan</label>
-              <select class="form-select" id="condition" [(ngModel)]="newItem.condition" name="condition">
-                <option *ngFor="let cond of conditions" [value]="cond">{{ cond }}</option>
-              </select>
-            </div>
-
-            <!-- Cena zakupu -->
-            <div class="mb-3">
-              <label for="boughtFor" class="form-label">Cena zakupu (PLN) *</label>
-              <input type="number" step="0.01" class="form-control" id="boughtFor"
-                     [(ngModel)]="newItem.bought_for" name="bought_for" required>
-            </div>
-
-            <!-- Cena sprzedaży -->
-            <div class="mb-3">
-              <label for="askingPrice" class="form-label">Sugerowana cena (PLN)</label>
-              <input type="number" step="0.01" class="form-control" id="askingPrice"
-                     [(ngModel)]="newItem.asking_price" name="asking_price">
-            </div>
+            <!-- Przyciski -->
             <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
               <button type="submit" class="btn btn-primary px-4">
-                <i class="bi bi-plus-circle me-2"></i>Dodaj przedmiot
+                <i class="bi bi-cart-plus me-2"></i>Zatwierdź transakcję
               </button>
             </div>
           </form>

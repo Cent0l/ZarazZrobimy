@@ -1,6 +1,58 @@
-.sortable-header{
+.sortable-header {
   cursor: pointer;
 }
-.cursor-help{
-  cursor: default;
+
+.sortable-header:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+.cursor-help {
+  cursor: help;
+}
+
+.profit {
+  color: green;
+  font-weight: bold;
+}
+
+.loss {
+  color: red;
+  font-weight: bold;
+}
+
+.no-change {
+  color: gray;
+}
+
+/* Responsywna tabela */
+.table-responsive-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.smart-table {
+  min-width: 800px;
+  width: 100%;
+}
+
+.smart-table th {
+  white-space: nowrap;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+}
+
+.smart-table td {
+  font-size: 0.9rem;
+  padding: 0.5rem;
+}
+
+/* Wygląd na mniejszych ekranach */
+@media (max-width: 576px) {
+  .smart-table th,
+  .smart-table td {
+    padding: 0.4rem;
+    font-size: 0.85rem;
+  }
 }

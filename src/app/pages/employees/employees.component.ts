@@ -38,9 +38,11 @@ interface AuthResponse {
 })
 export class EmployeesComponent implements OnInit {
   employees: Employee[] = [];
+  originalEmployees: Employee[] = []; // Dla resetu sortowania
   roles: Role[] = [];
   isLoading: boolean = true;
   error: string | null = null;
+  successMessage: string | null = null;
 
   // Zmienne dla logowania
   showLoginModal: boolean = false;
@@ -50,6 +52,22 @@ export class EmployeesComponent implements OnInit {
     password: ''
   };
   authToken: string | null = null;
+
+  // Zmienne dla sortowania
+  sortColumn: keyof Employee | 'roleName' | 'status' = 'id';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
+  // Zmienne dla modala zmiany statusu
+  showStatusModal: boolean = false;
+  employeeToUpdateStatus: Employee | null = null;
+  newStatus: string = '';
+  statusInProgress: boolean = false;
+  availableStatuses = [
+    { value: 'active', label: 'AKTYWNY' },
+    { value: 'inactive', label: 'NIEAKTYWNY' },
+    { value: 'on_leave', label: 'URLOP' },
+    { value: 'terminated', label: 'ZWOLNIONY' }
+  ];
 
   constructor(private http: HttpClient) {}
 
@@ -93,6 +111,48 @@ export class EmployeesComponent implements OnInit {
       });
   }
 
+  // Sortowanie pracowników
+  sortData(column: keyof Employee | 'roleName' | 'status'): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.employees.sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      // Special handling for nested or custom properties
+      if (column === 'roleName') {
+        aValue = a.role?.roleName || '';
+        bValue = b.role?.roleName || '';
+      } else if (column === 'status') {
+        aValue = this.getStatusDisplay(a.status);
+        bValue = this.getStatusDisplay(b.status);
+      } else {
+        aValue = a[column as keyof Employee];
+        bValue = b[column as keyof Employee];
+      }
+
+      // Handle different value types appropriately
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return this.sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+      } else {
+        const strA = String(aValue || '').toLowerCase();
+        const strB = String(bValue || '').toLowerCase();
+        return this.sortDirection === 'asc' ? strA.localeCompare(strB) : strB.localeCompare(strA);
+      }
+    });
+  }
+
+  resetSort(): void {
+    this.sortColumn = 'id';
+    this.sortDirection = 'asc';
+    this.employees = [...this.originalEmployees];
+  }
+
   // Metoda dla celów testowych, która używa json-server
   testFetchEmployees(): void {
     // Używamy starego endpointu json-server
@@ -124,6 +184,7 @@ export class EmployeesComponent implements OnInit {
               status: this.mapStatus(emp.status)
             };
           });
+          this.originalEmployees = [...this.employees];
           this.isLoading = false;
           this.testFetchRoles();
         },
@@ -155,6 +216,7 @@ export class EmployeesComponent implements OnInit {
             }
             return emp;
           });
+          this.originalEmployees = [...this.employees];
         },
         error: (err) => {
           console.error('Błąd pobierania ról testowych:', err);
@@ -183,6 +245,7 @@ export class EmployeesComponent implements OnInit {
     }).subscribe({
       next: (data) => {
         this.employees = data;
+        this.originalEmployees = [...data]; // Kopia dla resetu sortowania
         this.isLoading = false;
       },
       error: (err) => {
@@ -197,6 +260,75 @@ export class EmployeesComponent implements OnInit {
           this.testFetchEmployees();
         }
         this.isLoading = false;
+      }
+    });
+  }
+
+  // Modal zmiany statusu pracownika
+  openStatusModal(employee: Employee): void {
+    this.employeeToUpdateStatus = employee;
+    this.newStatus = employee.status; // Domyślnie wybrany obecny status
+    this.showStatusModal = true;
+    this.error = null;
+  }
+
+  closeStatusModal(): void {
+    this.showStatusModal = false;
+    this.employeeToUpdateStatus = null;
+    this.error = null;
+  }
+
+  updateEmployeeStatus(): void {
+    if (!this.employeeToUpdateStatus || !this.employeeToUpdateStatus.id) {
+      this.error = "Nie można znaleźć wybranego pracownika.";
+      return;
+    }
+
+    this.statusInProgress = true;
+    this.error = null;
+
+    // Przygotowanie danych do wysłania
+    const statusUpdate = {
+      status: this.newStatus
+    };
+
+    // Wywołanie API
+    this.http.patch<Employee>(`/api/employees/${this.employeeToUpdateStatus.id}/status`, statusUpdate, {
+      headers: this.getAuthHeaders()
+    }).subscribe({
+      next: (updatedEmployee) => {
+        // Aktualizacja pracownika na liście
+        const index = this.employees.findIndex(e => e.id === updatedEmployee.id);
+        if (index !== -1) {
+          this.employees[index].status = updatedEmployee.status;
+        }
+        // Również aktualizacja w originalEmployees
+        const originalIndex = this.originalEmployees.findIndex(e => e.id === updatedEmployee.id);
+        if (originalIndex !== -1) {
+          this.originalEmployees[originalIndex].status = updatedEmployee.status;
+        }
+
+        this.statusInProgress = false;
+        this.showStatusModal = false;
+        this.successMessage = `Status pracownika ${updatedEmployee.firstName} ${updatedEmployee.lastName} został zmieniony na ${this.getStatusDisplay(updatedEmployee.status)}.`;
+
+        // Ukryj wiadomość po 3 sekundach
+        setTimeout(() => {
+          this.successMessage = null;
+        }, 3000);
+      },
+      error: (err) => {
+        console.error('Błąd aktualizacji statusu pracownika:', err);
+        this.statusInProgress = false;
+
+        if (err.status === 401) {
+          this.error = 'Sesja wygasła. Proszę zalogować się ponownie.';
+          this.authToken = null;
+          localStorage.removeItem('authToken');
+          this.showLoginModal = true;
+        } else {
+          this.error = `Nie udało się zaktualizować statusu: ${err.message || 'Nieznany błąd'}`;
+        }
       }
     });
   }

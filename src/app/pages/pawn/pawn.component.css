@@ -1,0 +1,50 @@
+/* Style dla modala przedmiotów */
+.item-details-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
+}
+
+.item-image-placeholder {
+  height: 100px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+.modal-header h5 {
+  font-weight: 600;
+}
+
+.cursor-help {
+  cursor: help;
+}
+
+/* Bardziej wyraźne style dla przycisku z liczbą przedmiotów */
+button.btn-outline-secondary {
+  transition: all 0.2s;
+}
+
+button.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Poprawione style dla gwiazdek oceny stanu */
+.text-warning {
+  color: #ffc107 !important;
+  letter-spacing: -2px;
+}
+
+/* Animacja modala */
+.modal.fade.show {
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

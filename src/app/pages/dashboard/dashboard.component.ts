@@ -5,8 +5,9 @@ import { InventoryComponent } from '../inventory/inventory.component';
 import { HistoryComponent } from '../history/history.component';
 import { ReportsComponent } from '../reports/reports.component';
 import { AddItemComponent } from '../add-item/add-item.component';
-import {EmployeesComponent} from '../employees/employees.component';
+import { EmployeesComponent } from '../employees/employees.component';
 import { CustomersComponent } from '../customers/customers.component';
+import { PawnsComponent } from '../pawn/pawn.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +20,8 @@ import { CustomersComponent } from '../customers/customers.component';
     ReportsComponent,
     AddItemComponent,
     EmployeesComponent,
-    CustomersComponent
+    CustomersComponent,
+    PawnsComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']

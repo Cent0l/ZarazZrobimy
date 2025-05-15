@@ -1,0 +1,481 @@
+<div class="container my-4">
+  <div class="container text-center">
+    <h2 class="mb-4">🫰 Zarządzanie zastawami w lombardzie 💰</h2>
+  </div>
+
+  <div *ngIf="isLoading" class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Ładowanie...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <!-- Filtrowanie statusu -->
+  <div *ngIf="!isLoading && !error" class="mb-4">
+    <div class="btn-group" role="group" aria-label="Filtruj zastawy">
+      <button type="button" class="btn" [ngClass]="{'btn-primary': filterStatus === 'all', 'btn-outline-primary': filterStatus !== 'all'}" (click)="changeStatusFilter('all')">
+        Wszystkie
+      </button>
+      <button type="button" class="btn" [ngClass]="{'btn-success': filterStatus === 'active', 'btn-outline-success': filterStatus !== 'active'}" (click)="changeStatusFilter('active')">
+        Aktywne
+      </button>
+      <button type="button" class="btn" [ngClass]="{'btn-danger': filterStatus === 'expired', 'btn-outline-danger': filterStatus !== 'expired'}" (click)="changeStatusFilter('expired')">
+        Przeterminowane
+      </button>
+      <button type="button" class="btn" [ngClass]="{'btn-info': filterStatus === 'redeemed', 'btn-outline-info': filterStatus !== 'redeemed'}" (click)="changeStatusFilter('redeemed')">
+        Wykupione
+      </button>
+    </div>
+    <button class="btn btn-outline-primary ms-3" (click)="openAddPawnModal()">
+      <i class="bi bi-plus-circle"></i> Dodaj nowy zastaw
+    </button>
+  </div>
+
+  <!-- Lista zastawów -->
+  <div *ngIf="!isLoading && !error && pawns.length > 0" class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+      <tr>
+        <th (click)="sortData('transactionDate')" class="sortable-header">
+          Data zastawu
+          <span *ngIf="sortColumn === 'transactionDate'" class="ms-1">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
+        <th (click)="sortData('expiryDate')" class="sortable-header">
+          Data wykupu
+          <span *ngIf="sortColumn === 'expiryDate'" class="ms-1">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
+        <th (click)="sortData('customerName')" class="sortable-header">
+          Klient
+          <span *ngIf="sortColumn === 'customerName'" class="ms-1">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
+        <th (click)="sortData('employeeName')" class="sortable-header">
+          Pracownik
+          <span *ngIf="sortColumn === 'employeeName'" class="ms-1">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
+        <th (click)="sortData('totalAmount')" class="sortable-header">
+          Kwota pożyczki
+          <span *ngIf="sortColumn === 'totalAmount'" class="ms-1">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
+        <th (click)="sortData('redemptionPrice')" class="sortable-header">
+          Kwota wykupu
+          <span *ngIf="sortColumn === 'redemptionPrice'" class="ms-1">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
+        <th (click)="sortData('pawnDurationDays')" class="sortable-header">
+          Okres (dni)
+          <span *ngIf="sortColumn === 'pawnDurationDays'" class="ms-1">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
+        <th (click)="sortData('status')" class="sortable-header">
+          Status
+          <span *ngIf="sortColumn === 'status'" class="ms-1">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
+        <th>Przedmioty</th>
+        <th>Akcje</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let pawn of pawns">
+        <td>{{ pawn.transactionDate | date:'dd.MM.yyyy' }}</td>
+        <td [ngClass]="{'text-danger fw-bold': pawn.status === 'expired' && pawn.expiryDate}">
+          {{ pawn.expiryDate | date:'dd.MM.yyyy' }}
+        </td>
+        <td>{{ pawn.customerName }}</td>
+        <td>{{ pawn.employeeName }}</td>
+        <td>{{ pawn.totalAmount | number:'1.2-2' }} PLN</td>
+        <td>{{ pawn.redemptionPrice | number:'1.2-2' }} PLN</td>
+        <td>{{ pawn.pawnDurationDays }}</td>
+        <td>
+            <span class="badge rounded-pill" [ngClass]="getStatusBadgeClass(pawn.status || '')">
+              {{ getStatusDisplay(pawn.status || '') }}
+            </span>
+        </td>
+        <td>
+          <!-- Zmieniony przycisk - teraz otwiera modal z szczegółami -->
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openItemsModal(pawn)">
+            {{ pawn.items.length }} przedm.
+          </button>
+        </td>
+        <td>
+          <!-- Akcje zależne od statusu -->
+          <div class="btn-group">
+            <!-- Dla aktywnych zastawów - możliwość wykupu -->
+            <button *ngIf="pawn.status === 'active'"
+                    class="btn btn-sm btn-success"
+                    (click)="openRedemptionModal(pawn)">
+              <i class="bi bi-cash"></i> Wykup
+            </button>
+
+            <!-- Dla przeterminowanych zastawów - możliwość przedawnienia -->
+            <button *ngIf="pawn.status === 'expired'"
+                    class="btn btn-sm btn-danger"
+                    (click)="openForfeitureModal(pawn)">
+              <i class="bi bi-x-circle"></i> Przedawnij
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <button (click)="resetSort()" class="btn btn-outline-secondary btn-sm mb-3">
+      <i class="bi bi-arrow-counterclockwise"></i> Resetuj sortowanie
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && !error && pawns.length === 0" class="alert alert-info">
+    Brak zastawów do wyświetlenia dla wybranego filtru.
+  </div>
+
+  <!-- Modal dodawania zastawu -->
+  <div *ngIf="showAddPawnModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Dodaj nowy zastaw</h5>
+          <button type="button" class="btn-close" (click)="closeAddPawnModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="error" class="alert alert-danger">
+            {{ error }}
+          </div>
+
+          <!-- Formularz zastawu -->
+          <form>
+            <!-- Sekcja klienta -->
+            <h4 class="mb-3">Dane klienta</h4>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="existingCustomer" [(ngModel)]="useExistingCustomer" name="useExistingCustomer">
+              <label class="form-check-label" for="existingCustomer">Wybierz istniejącego klienta</label>
+            </div>
+
+            <!-- Istniejący klient -->
+            <div *ngIf="useExistingCustomer" class="mb-4">
+              <label for="customerId" class="form-label">Wybierz klienta *</label>
+
+              <!-- Loader podczas ładowania listy klientów -->
+              <div *ngIf="isLoadingCustomers" class="d-flex align-items-center mb-2">
+                <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                  <span class="visually-hidden">Ładowanie...</span>
+                </div>
+                <span>Pobieranie listy klientów...</span>
+              </div>
+
+              <!-- Komunikat o błędzie -->
+              <div *ngIf="customerLoadError" class="alert alert-danger py-2">
+                {{ customerLoadError }}
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="loadCustomers()">Spróbuj ponownie</button>
+              </div>
+
+              <!-- Lista klientów -->
+              <select class="form-select" id="customerId" [(ngModel)]="customerId" name="customerId" required
+                      [ngClass]="{'is-invalid': isCustomerBlocked(), 'border-danger': isCustomerBlocked()}"
+                      [attr.aria-describedby]="isCustomerBlocked() ? 'customerBlockedFeedback' : null">
+                <option [ngValue]="null">Wybierz klienta...</option>
+                <option *ngFor="let customer of customers" [ngValue]="customer.id"
+                        [ngClass]="{'text-danger': customer.doNotServe}">
+                  {{ customer.firstName }} {{ customer.lastName }}
+                  <span class="text-muted small">- {{ customer.idNumber }}</span>
+                </option>
+              </select>
+
+              <!-- Komunikat ostrzegawczy gdy klient jest zablokowany -->
+              <div *ngIf="isCustomerBlocked()" class="invalid-feedback" id="customerBlockedFeedback">
+                <strong>UWAGA:</strong> Ten klient jest na liście osób, od których nie przyjmujemy przedmiotów!
+              </div>
+            </div>
+
+            <!-- Nowy klient -->
+            <div *ngIf="!useExistingCustomer" class="mb-4">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="firstName" class="form-label">Imię *</label>
+                  <input type="text" class="form-control" id="firstName" [(ngModel)]="newPawn.newCustomer!.firstName" name="firstName" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName" class="form-label">Nazwisko *</label>
+                  <input type="text" class="form-control" id="lastName" [(ngModel)]="newPawn.newCustomer!.lastName" name="lastName" required>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="idType" class="form-label">Typ dokumentu *</label>
+                  <select class="form-select" id="idType" [(ngModel)]="newPawn.newCustomer!.idType" name="idType" required>
+                    <option value="id_card">Dowód osobisty</option>
+                    <option value="passport">Paszport</option>
+                    <option value="driver_license">Prawo jazdy</option>
+                    <option value="other">Inny</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="idNumber" class="form-label">Numer dokumentu *</label>
+                  <input type="text" class="form-control" id="idNumber" [(ngModel)]="newPawn.newCustomer!.idNumber" name="idNumber" required>
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Parametry zastawu -->
+            <h4 class="mb-3">Parametry zastawu</h4>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="pawnDurationDays" class="form-label">Okres zastawu (dni) *</label>
+                <input type="number" class="form-control" id="pawnDurationDays" [(ngModel)]="newPawn.pawnDurationDays" name="pawnDurationDays" required min="1">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="interestRate" class="form-label">Oprocentowanie (%) *</label>
+                <input type="number" class="form-control" id="interestRate" [(ngModel)]="newPawn.interestRate" name="interestRate" required min="0" step="0.01">
+              </div>
+            </div>
+
+            <div class="alert alert-info" *ngIf="calculateTotalLoanAmount() > 0">
+              <p class="mb-1"><strong>Podsumowanie:</strong></p>
+              <p class="mb-1">Całkowita kwota pożyczki: <strong>{{ calculateTotalLoanAmount() | number:'1.2-2' }} PLN</strong></p>
+              <p class="mb-0">Kwota do spłaty po {{ newPawn.pawnDurationDays }} dniach: <strong>{{ calculateRedemptionAmount() | number:'1.2-2' }} PLN</strong></p>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Sekcja przedmiotów -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4>Przedmioty zastawiane</h4>
+              <button type="button" class="btn btn-outline-primary btn-sm" (click)="addItem()">
+                <i class="bi bi-plus-circle me-1"></i> Dodaj przedmiot
+              </button>
+            </div>
+
+            <div *ngFor="let item of newPawn.items; let i = index" class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="card-title mb-0">Przedmiot #{{i+1}}</h5>
+                  <button type="button" class="btn btn-outline-danger btn-sm" *ngIf="newPawn.items.length > 1" (click)="removeItem(i)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="name{{i}}" class="form-label">Nazwa przedmiotu *</label>
+                    <input type="text" class="form-control" id="name{{i}}" [(ngModel)]="item.name" name="name{{i}}" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="category{{i}}" class="form-label">Kategoria *</label>
+                    <select class="form-select" id="category{{i}}" [(ngModel)]="item.categoryId" name="categoryId{{i}}" required>
+                      <option *ngFor="let category of categories" [value]="category.id">{{ category.categoryName }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="brand{{i}}" class="form-label">Marka *</label>
+                    <input type="text" class="form-control" id="brand{{i}}" [(ngModel)]="item.brand" name="brand{{i}}" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="model{{i}}" class="form-label">Model *</label>
+                    <input type="text" class="form-control" id="model{{i}}" [(ngModel)]="item.model" name="model{{i}}" required>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="serialNumber{{i}}" class="form-label">Numer seryjny</label>
+                    <input type="text" class="form-control" id="serialNumber{{i}}" [(ngModel)]="item.serialNumber" name="serialNumber{{i}}">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="condition{{i}}" class="form-label">Stan *</label>
+                    <select class="form-select" id="condition{{i}}" [(ngModel)]="item.condition" name="condition{{i}}" required>
+                      <option *ngFor="let cond of CONDITIONS" [value]="cond">{{ cond }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="description{{i}}" class="form-label">Opis</label>
+                  <textarea class="form-control" id="description{{i}}" [(ngModel)]="item.description" name="description{{i}}" rows="2"></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label for="loanAmount{{i}}" class="form-label">Kwota pożyczki (PLN) *</label>
+                  <input type="number" step="0.01" class="form-control" id="loanAmount{{i}}" [(ngModel)]="item.loanAmount" name="loanAmount{{i}}" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notatki do transakcji -->
+            <div class="mb-4">
+              <label for="notes" class="form-label">Uwagi do zastawu</label>
+              <textarea class="form-control" id="notes" [(ngModel)]="newPawn.notes" name="notes" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeAddPawnModal()">Anuluj</button>
+          <button type="button" class="btn btn-primary" [disabled]="addPawnInProgress" (click)="submitPawn()">
+            <span *ngIf="!addPawnInProgress">Dodaj zastaw</span>
+            <span *ngIf="addPawnInProgress" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal wykupu zastawu -->
+  <div *ngIf="showRedemptionModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Wykup zastawu</h5>
+          <button type="button" class="btn-close" (click)="closeRedemptionModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="error" class="alert alert-danger">
+            {{ error }}
+          </div>
+          <p>Czy na pewno chcesz wykupić zastaw:</p>
+          <div *ngIf="pawnToRedeem" class="card mb-3">
+            <div class="card-body">
+              <p><strong>Klient:</strong> {{ pawnToRedeem.customerName }}</p>
+              <p><strong>Data zastawu:</strong> {{ pawnToRedeem.transactionDate | date:'dd.MM.yyyy' }}</p>
+              <p><strong>Data wykupu:</strong> {{ pawnToRedeem.expiryDate | date:'dd.MM.yyyy' }}</p>
+              <p><strong>Przedmioty:</strong>
+                <span *ngFor="let item of pawnToRedeem.items; let last = last">
+                  {{ item.itemName }} ({{ item.brand }} {{ item.model }}){{ !last ? ', ' : '' }}
+                </span>
+              </p>
+              <p><strong>Kwota pożyczki:</strong> {{ pawnToRedeem.totalAmount | number:'1.2-2' }} PLN</p>
+              <p><strong>Kwota do zapłaty:</strong> <span class="fw-bold text-danger">{{ pawnToRedeem.redemptionPrice | number:'1.2-2' }} PLN</span></p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeRedemptionModal()">Anuluj</button>
+          <button type="button" class="btn btn-success" [disabled]="redemptionInProgress" (click)="redeemPawn()">
+            <span *ngIf="!redemptionInProgress">Potwierdź wykup</span>
+            <span *ngIf="redemptionInProgress" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal przedawnienia zastawu -->
+  <div *ngIf="showForfeitureModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Przedawnienie zastawu</h5>
+          <button type="button" class="btn-close" (click)="closeForfeitureModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="error" class="alert alert-danger">
+            {{ error }}
+          </div>
+          <p>Czy na pewno chcesz oznaczyć zastaw jako przedawniony? Ta operacja spowoduje, że przedmioty przejdą na własność lombardu.</p>
+          <div *ngIf="pawnToForfeit" class="card mb-3">
+            <div class="card-body">
+              <p><strong>Klient:</strong> {{ pawnToForfeit.customerName }}</p>
+              <p><strong>Data zastawu:</strong> {{ pawnToForfeit.transactionDate | date:'dd.MM.yyyy' }}</p>
+              <p><strong>Data wykupu:</strong> <span class="text-danger">{{ pawnToForfeit.expiryDate | date:'dd.MM.yyyy' }}</span></p>
+              <p><strong>Przedmioty:</strong>
+                <span *ngFor="let item of pawnToForfeit.items; let last = last">
+                  {{ item.itemName }} ({{ item.brand }} {{ item.model }}){{ !last ? ', ' : '' }}
+                </span>
+              </p>
+              <p><strong>Kwota pożyczki:</strong> {{ pawnToForfeit.totalAmount | number:'1.2-2' }} PLN</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeForfeitureModal()">Anuluj</button>
+          <button type="button" class="btn btn-danger" [disabled]="forfeitureInProgress" (click)="forfeitPawn()">
+            <span *ngIf="!forfeitureInProgress">Potwierdź przedawnienie</span>
+            <span *ngIf="forfeitureInProgress" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal z przedmiotami zastawu (NOWY) -->
+  <div *ngIf="showItemsModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Szczegóły przedmiotów w zastawie</h5>
+          <button type="button" class="btn-close" (click)="closeItemsModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="selectedPawnItems">
+            <div class="mb-3">
+              <p><strong>Klient:</strong> {{ selectedPawnItems.customerName }}</p>
+              <p><strong>Data zastawu:</strong> {{ selectedPawnItems.transactionDate | date:'dd.MM.yyyy' }}</p>
+              <p><strong>Data wykupu:</strong> {{ selectedPawnItems.expiryDate | date:'dd.MM.yyyy' }}</p>
+            </div>
+
+            <h6 class="mt-4 mb-3">Lista przedmiotów:</h6>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                <tr>
+                  <th>Nazwa</th>
+                  <th>Marka</th>
+                  <th>Model</th>
+                  <th>Nr seryjny</th>
+                  <th>Stan</th>
+                  <th>Wartość</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of selectedPawnItems.items">
+                  <td>{{ item.itemName }}</td>
+                  <td>{{ item.brand }}</td>
+                  <td>{{ item.model }}</td>
+                  <td>{{ item.serialNumber || '-' }}</td>
+                  <td>
+                      <span data-bs-toggle="tooltip" [attr.title]="item.condition" class="cursor-help">
+                        <ng-container [ngSwitch]="getConditionRating(item.condition)">
+                          <span *ngSwitchCase="5" class="text-warning">⭐⭐⭐⭐⭐</span>
+                          <span *ngSwitchCase="4" class="text-warning">⭐⭐⭐⭐</span>
+                          <span *ngSwitchCase="3" class="text-warning">⭐⭐⭐</span>
+                          <span *ngSwitchCase="2" class="text-warning">⭐⭐</span>
+                          <span *ngSwitchCase="1" class="text-warning">⭐</span>
+                          <span *ngSwitchDefault>{{ item.condition || '-' }}</span>
+                        </ng-container>
+                      </span>
+                  </td>
+                  <td>{{ item.price | number:'1.2-2' }} PLN</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Dodatkowe informacje, jeśli są -->
+            <div *ngIf="selectedPawnItems.notes" class="mt-3">
+              <h6>Uwagi:</h6>
+              <p class="text-muted">{{ selectedPawnItems.notes }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="closeItemsModal()">Zamknij</button>
+
+          <ng-container *ngIf="selectedPawnItems && selectedPawnItems.status === 'expired'">
+            <button type="button" class="btn btn-danger" (click)="openForfeitureModal(selectedPawnItems); closeItemsModal()">
+              <i class="bi bi-x-circle"></i> Przedawnij zastaw
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tło modala -->
+  <div class="modal-backdrop fade show" *ngIf="showAddPawnModal || showRedemptionModal || showForfeitureModal || showItemsModal"></div>
+</div>

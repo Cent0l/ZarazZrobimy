@@ -42,8 +42,8 @@ interface Transaction {
   imports: [CommonModule, HttpClientModule],
   templateUrl: './history.component.html',
   styles: [`
-    .profit { color: green; }
-    .loss { color: red; }
+    .profit { color: green; font-weight: bold; }
+    .loss { color: red; font-weight: bold; }
     .no-change { color: gray; }
     .sortable-header {
       cursor: pointer;
@@ -54,6 +54,35 @@ interface Transaction {
     .cursor-help {
       cursor: help;
     }
+
+    /* Style dla responsywnej tabeli */
+    .table-responsive-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .smart-table {
+      min-width: 800px;
+    }
+
+    .smart-table th {
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .smart-table td {
+      font-size: 0.9rem;
+      padding: 0.5rem;
+    }
+
+    /* Responsywne zachowanie na bardzo małych ekranach */
+    @media (max-width: 576px) {
+      .smart-table th,
+      .smart-table td {
+        padding: 0.4rem;
+        font-size: 0.85rem;
+      }
+    }
   `]
 })
 export class HistoryComponent implements OnInit, AfterViewInit {
@@ -62,6 +91,10 @@ export class HistoryComponent implements OnInit, AfterViewInit {
   isLoading = true;
   error: string | null = null;
   authToken: string | null = null;
+
+  // Dla modalu szczegółów
+  selectedItem: TransactionItem | null = null;
+  selectedTransaction: Transaction | null = null;
 
   // Sorting
   sortColumn: string = '';
@@ -131,6 +164,15 @@ export class HistoryComponent implements OnInit, AfterViewInit {
     });
   }
 
+  showItemDetails(item: TransactionItem, transaction: Transaction): void {
+    this.selectedItem = item;
+    this.selectedTransaction = transaction;
+
+    // Otwieramy modal z detalami
+    const modal = new bootstrap.Modal(document.getElementById('itemDetailsModal'));
+    modal.show();
+  }
+
   sort(column: string): void {
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -174,6 +216,14 @@ export class HistoryComponent implements OnInit, AfterViewInit {
         // Use numerical value for condition sorting
         valueA = this.getConditionRating(itemA.condition);
         valueB = this.getConditionRating(itemB.condition);
+      } else if (column === 'profit') {
+        // Sortowanie po zysku
+        valueA = this.calculateMargin(itemA, transactionA);
+        valueB = this.calculateMargin(itemB, transactionB);
+      } else if (column === 'profitPercentage') {
+        // Sortowanie po zysku procentowym
+        valueA = this.calculateMarginPercentage(itemA, transactionA);
+        valueB = this.calculateMarginPercentage(itemB, transactionB);
       } else {
         valueA = itemA[column as keyof TransactionItem];
         valueB = itemB[column as keyof TransactionItem];

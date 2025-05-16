@@ -1,0 +1,110 @@
+[
+    {
+        "id": 1,
+        "login": "admin",
+        "firstName": "system",
+        "lastName": "admin",
+        "role": {
+            "id": 1,
+            "roleName": "admin",
+            "description": "Can Rm -rf / You",
+            "permissionsLevel": 100,
+            "maxBuy": null
+        },
+        "hireDate": "2025-04-24",
+        "address": null,
+        "phoneNumber": null,
+        "email": null,
+        "status": "active"
+    },
+    {
+        "id": 2,
+        "login": "j.kowalski",
+        "firstName": "Jan",
+        "lastName": "Kowalski",
+        "role": {
+            "id": 2,
+            "roleName": "Właściciel",
+            "description": "CEO lombardu, posiada wszystkie prawa i dostępy do strony",
+            "permissionsLevel": 4,
+            "maxBuy": 10000000
+        },
+        "hireDate": "2019-01-10",
+        "address": "Słoneczna 4, Olsztyn",
+        "phoneNumber": "123666888",
+        "email": "j.kowalski@lombard.pl",
+        "status": "active"
+    },
+    {
+        "id": 3,
+        "login": "a.nowak",
+        "firstName": "Anna",
+        "lastName": "Nowak",
+        "role": {
+            "id": 3,
+            "roleName": "Specjalista",
+            "description": "Kierownik lombardu, może zarządzać pracownikami i kupować za więcej",
+            "permissionsLevel": 3,
+            "maxBuy": 1000000
+        },
+        "hireDate": "2020-02-15",
+        "address": "Lazurowa 13, Warszawa",
+        "phoneNumber": "984232444",
+        "email": "a.nowak@lombard.pl",
+        "status": "active"
+    },
+    {
+        "id": 5,
+        "login": "k.zielinska",
+        "firstName": "Karolina",
+        "lastName": "Zielińska",
+        "role": {
+            "id": 4,
+            "roleName": "Pracownik z stażem 2 lata+",
+            "description": "Pracownik z dłuższym doświadczeniem, większy limit zakupów",
+            "permissionsLevel": 2,
+            "maxBuy": 100000
+        },
+        "hireDate": "2022-04-25",
+        "address": "Dworcowa 23, Gdańsk",
+        "phoneNumber": "715221344",
+        "email": "k.zielinska@lombard.pl",
+        "status": "active"
+    },
+    {
+        "id": 6,
+        "login": "m.lewandowski",
+        "firstName": "Michał",
+        "lastName": "Lewandowski",
+        "role": {
+            "id": 5,
+            "roleName": "Nowy Pracownik",
+            "description": "Obsługuje płatności i wydania",
+            "permissionsLevel": 1,
+            "maxBuy": 10000
+        },
+        "hireDate": "2025-01-30",
+        "address": "Grottgera 17, Przasznysz",
+        "phoneNumber": "694422123",
+        "email": "m.lewandowski@lombard.pl",
+        "status": "active"
+    },
+    {
+        "id": 4,
+        "login": "p.wisniewski",
+        "firstName": "Piotr",
+        "lastName": "Wiśniewski",
+        "role": {
+            "id": 3,
+            "roleName": "Specjalista",
+            "description": "Kierownik lombardu, może zarządzać pracownikami i kupować za więcej",
+            "permissionsLevel": 3,
+            "maxBuy": 1000000
+        },
+        "hireDate": "2022-03-20",
+        "address": "Narutowicza 44, Grudziądz",
+        "phoneNumber": "512232444",
+        "email": "p.wisniewski@lombard.pl",
+        "status": "inactive"
+    }
+]

@@ -1,0 +1,65 @@
+[
+    {
+        "id": 5,
+        "firstName": "Ewa",
+        "lastName": "Dąbrowska",
+        "idType": "id_card",
+        "idNumber": "DOC998877",
+        "registrationDate": "2025-04-24",
+        "doNotServe": false
+    },
+    {
+        "id": 3,
+        "firstName": "Katarzyna",
+        "lastName": "Wiśniewska",
+        "idType": "id_card",
+        "idNumber": "XYZ654321",
+        "registrationDate": "2025-04-24",
+        "doNotServe": true
+    },
+    {
+        "id": 4,
+        "firstName": "Tomasz",
+        "lastName": "Zieliński",
+        "idType": "driver_license",
+        "idNumber": "PJ112233",
+        "registrationDate": "2025-04-24",
+        "doNotServe": false
+    },
+    {
+        "id": 6,
+        "firstName": "Sebastian",
+        "lastName": "Sucharski",
+        "idType": "id_card",
+        "idNumber": "DKK123244",
+        "registrationDate": "2025-04-25",
+        "doNotServe": false
+    },
+    {
+        "id": 8,
+        "firstName": "Kinga",
+        "lastName": "Budzich",
+        "idType": "id_card",
+        "idNumber": "DWD489123",
+        "registrationDate": "2025-04-25",
+        "doNotServe": true
+    },
+    {
+        "id": 1,
+        "firstName": "Anna",
+        "lastName": "Kowalska",
+        "idType": "id_card",
+        "idNumber": "ABC123456",
+        "registrationDate": "2025-04-24",
+        "doNotServe": false
+    },
+    {
+        "id": 2,
+        "firstName": "Marek",
+        "lastName": "Nowak",
+        "idType": "passport",
+        "idNumber": "PA987654",
+        "registrationDate": "2025-04-24",
+        "doNotServe": false
+    }
+]

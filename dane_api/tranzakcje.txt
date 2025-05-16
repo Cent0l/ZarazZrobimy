@@ -1,0 +1,467 @@
+[
+    {
+        "id": 1,
+        "customerId": 1,
+        "customerName": "Anna Kowalska",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-24",
+        "transactionType": "purchase",
+        "totalAmount": 200.00,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Zakup ekspresu do kawy",
+        "items": [
+            {
+                "id": 1,
+                "itemId": 1,
+                "itemName": "Ekspres do kawy",
+                "description": "Ekspres do kawy w bardzo dobrym stanie",
+                "price": 200.00,
+                "brand": "DeLonghi",
+                "model": "Magnifica S",
+                "serialNumber": "SN123456",
+                "condition": "bardzo dobry",
+                "categoryId": 1,
+                "askingPrice": 350.00
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "customerId": 5,
+        "customerName": "Ewa Dąbrowska",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-24",
+        "transactionType": "purchase",
+        "totalAmount": 500.00,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Zakup aparatu fotograficznego",
+        "items": [
+            {
+                "id": 7,
+                "itemId": 7,
+                "itemName": "Aparat fotograficzny",
+                "description": "Lustrzanka cyfrowa z obiektywem",
+                "price": 500.00,
+                "brand": "Canon",
+                "model": "EOS 2000D",
+                "serialNumber": "CAM998877",
+                "condition": "dobry",
+                "categoryId": 9,
+                "askingPrice": 850.00
+            }
+        ]
+    },
+    {
+        "id": 11,
+        "customerId": 2,
+        "customerName": "Marek Nowak",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-25",
+        "transactionType": "sale",
+        "totalAmount": 600.00,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Sprzedane przez: system admin w dniu 2025-04-25",
+        "items": [
+            {
+                "id": 11,
+                "itemId": 5,
+                "itemName": "Zegarek",
+                "description": "Zegarek męski z mechanizmem automatycznym",
+                "price": 600.00,
+                "brand": "Seiko",
+                "model": "5 Sports",
+                "serialNumber": "WATCHSN2025",
+                "condition": "idealny",
+                "categoryId": 6,
+                "askingPrice": 700.00
+            }
+        ]
+    },
+    {
+        "id": 14,
+        "customerId": 2,
+        "customerName": "Marek Nowak",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-25",
+        "transactionType": "purchase",
+        "totalAmount": 600.00,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "",
+        "items": [
+            {
+                "id": 14,
+                "itemId": 11,
+                "itemName": "Samsung S24",
+                "description": "Samsung S24 w slabym stanie bez ladowarki",
+                "price": 600.00,
+                "brand": "Samsung",
+                "model": "S24",
+                "serialNumber": "SN444444412",
+                "condition": "Dostateczny",
+                "categoryId": 1,
+                "askingPrice": 780.00
+            }
+        ]
+    },
+    {
+        "id": 15,
+        "customerId": 6,
+        "customerName": "Sebastian Sucharski",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-25",
+        "transactionType": "purchase",
+        "totalAmount": 50.00,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "",
+        "items": [
+            {
+                "id": 15,
+                "itemId": 12,
+                "itemName": " Pad PS5",
+                "description": "Pad do PS5 kolor bialy, uzywany stan, bez pudelka",
+                "price": 50.00,
+                "brand": "PS5",
+                "model": " Pad PS5",
+                "serialNumber": "644623623277",
+                "condition": "Dobry",
+                "categoryId": 1,
+                "askingPrice": 65.00
+            }
+        ]
+    },
+    {
+        "id": 22,
+        "customerId": 2,
+        "customerName": "Marek Nowak",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-26",
+        "transactionType": "sale",
+        "totalAmount": 2222.00,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Sprzedane przez:  w dniu 2025-04-26",
+        "items": [
+            {
+                "id": 23,
+                "itemId": 2,
+                "itemName": "Smartfon",
+                "description": "Smartfon z lekkimi śladami użytkowania",
+                "price": 2222.00,
+                "brand": "Samsung",
+                "model": "Galaxy S21",
+                "serialNumber": "IMEI987654321",
+                "condition": "dobry",
+                "categoryId": 2,
+                "askingPrice": 950.00
+            }
+        ]
+    },
+    {
+        "id": 23,
+        "customerId": 4,
+        "customerName": "Tomasz Zieliński",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-26",
+        "transactionType": "sale",
+        "totalAmount": 2600.00,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Sprzedane przez: Anna Nowak w dniu 2025-04-26",
+        "items": [
+            {
+                "id": 24,
+                "itemId": 9,
+                "itemName": "Apple Iphone 15 Pro Max",
+                "description": "Nowy Iphone 15 pro max bez wad w foli",
+                "price": 2600.00,
+                "brand": "Apple",
+                "model": "Iphone 15 Pro Max",
+                "serialNumber": "SN2189049",
+                "condition": "Nowy",
+                "categoryId": 1,
+                "askingPrice": 2600.00
+            }
+        ]
+    },
+    {
+        "id": 25,
+        "customerId": 6,
+        "customerName": "Sebastian Sucharski",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-26",
+        "transactionType": "sale",
+        "totalAmount": 128.70,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Sprzedane przez: Michał Lewandowski w dniu 2025-04-26",
+        "items": [
+            {
+                "id": 26,
+                "itemId": 15,
+                "itemName": "TEST",
+                "description": "TEST",
+                "price": 128.70,
+                "brand": "TEST",
+                "model": "TEST",
+                "serialNumber": "TEST",
+                "condition": "Dostateczny",
+                "categoryId": 2,
+                "askingPrice": 128.70
+            }
+        ]
+    },
+    {
+        "id": 27,
+        "customerId": 2,
+        "customerName": "Marek Nowak",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-26",
+        "transactionType": "sale",
+        "totalAmount": 144.30,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Sprzedane przez: Karolina Zielińska w dniu 2025-04-26",
+        "items": [
+            {
+                "id": 28,
+                "itemId": 16,
+                "itemName": "TEST2",
+                "description": "TEST2TEST2TEST2TEST2",
+                "price": 144.30,
+                "brand": "TEST2",
+                "model": "TEST2",
+                "serialNumber": "TEST2137",
+                "condition": "Średni",
+                "categoryId": 1,
+                "askingPrice": 144.30
+            }
+        ]
+    },
+    {
+        "id": 29,
+        "customerId": 5,
+        "customerName": "Ewa Dąbrowska",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-26",
+        "transactionType": "sale",
+        "totalAmount": 14.30,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Sprzedane przez: Karolina Zielińska w dniu 2025-04-26",
+        "items": [
+            {
+                "id": 30,
+                "itemId": 17,
+                "itemName": "PralkaF1",
+                "description": "PralkaF1",
+                "price": 14.30,
+                "brand": "PralkaF1",
+                "model": "PralkaF1",
+                "serialNumber": "PralkaF1",
+                "condition": "Średni",
+                "categoryId": 3,
+                "askingPrice": 14.30
+            }
+        ]
+    },
+    {
+        "id": 31,
+        "customerId": 6,
+        "customerName": "Sebastian Sucharski",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-28",
+        "transactionType": "sale",
+        "totalAmount": 1604.20,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": null,
+        "notes": "Sprzedane przez: Karolina Zielińska w dniu 2025-04-28",
+        "items": [
+            {
+                "id": 32,
+                "itemId": 18,
+                "itemName": "PrzedmiotTEST",
+                "description": "PrzedmiotTEST",
+                "price": 1604.20,
+                "brand": "PrzedmiotTEST",
+                "model": "PrzedmiotTEST",
+                "serialNumber": "AF1412412",
+                "condition": "Nowy",
+                "categoryId": 1,
+                "askingPrice": 1604.20
+            }
+        ]
+    },
+    {
+        "id": 32,
+        "customerId": 2,
+        "customerName": "Marek Nowak",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-05-15",
+        "transactionType": "pawn",
+        "totalAmount": 1500.00,
+        "pawnDurationDays": 30,
+        "interestRate": 10.00,
+        "redemptionPrice": 1650.00,
+        "expiryDate": "2025-06-14",
+        "relatedTransactionId": null,
+        "notes": "Zastaw złotego łańcuszka na 30 dni",
+        "items": [
+            {
+                "id": 33,
+                "itemId": 19,
+                "itemName": "Złoty łańcuszek",
+                "description": "Złoty łańcuszek o splocie pancerka, próba 585",
+                "price": 1500.00,
+                "brand": "Yes",
+                "model": "Pancerka 50cm",
+                "serialNumber": null,
+                "condition": "Dobry",
+                "categoryId": 2,
+                "askingPrice": null
+            }
+        ]
+    },
+    {
+        "id": 33,
+        "customerId": 2,
+        "customerName": "Marek Nowak",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-05-15",
+        "transactionType": "redemption",
+        "totalAmount": 1650.00,
+        "pawnDurationDays": null,
+        "interestRate": null,
+        "redemptionPrice": null,
+        "expiryDate": null,
+        "relatedTransactionId": 32,
+        "notes": "Wykupione w dniu 2025-05-15",
+        "items": [
+            {
+                "id": 34,
+                "itemId": 19,
+                "itemName": "Złoty łańcuszek",
+                "description": "Złoty łańcuszek o splocie pancerka, próba 585",
+                "price": 1500.00,
+                "brand": "Yes",
+                "model": "Pancerka 50cm",
+                "serialNumber": null,
+                "condition": "Dobry",
+                "categoryId": 2,
+                "askingPrice": null
+            }
+        ]
+    },
+    {
+        "id": 34,
+        "customerId": 5,
+        "customerName": "Ewa Dąbrowska",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-05-15",
+        "transactionType": "pawn",
+        "totalAmount": 3000.00,
+        "pawnDurationDays": 10,
+        "interestRate": 20.00,
+        "redemptionPrice": 3600.00,
+        "expiryDate": "2025-05-25",
+        "relatedTransactionId": null,
+        "notes": "",
+        "items": [
+            {
+                "id": 35,
+                "itemId": 20,
+                "itemName": "IPhone 15 Pro",
+                "description": "NOwy w foli iphone 15 pro",
+                "price": 3000.00,
+                "brand": "Apple",
+                "model": "IPhone 15 Pro",
+                "serialNumber": "SN21890492",
+                "condition": "Bardzo dobry",
+                "categoryId": 2,
+                "askingPrice": null
+            }
+        ]
+    },
+    {
+        "id": 35,
+        "customerId": 6,
+        "customerName": "Sebastian Sucharski",
+        "employeeId": 1,
+        "employeeName": "system admin",
+        "transactionDate": "2025-04-15",
+        "transactionType": "pawn",
+        "totalAmount": 500.00,
+        "pawnDurationDays": 5,
+        "interestRate": 25.00,
+        "redemptionPrice": 625.00,
+        "expiryDate": "2025-04-20",
+        "relatedTransactionId": null,
+        "notes": "przyjęto zastaw bo jakże inaczej",
+        "items": [
+            {
+                "id": 36,
+                "itemId": 21,
+                "itemName": "Lodówka Beko Smart AI B4CK3NDD_SL33P",
+                "description": "Lodówka w stanie średnim, widać obdrapania na drzwiach",
+                "price": 500.00,
+                "brand": "Beko",
+                "model": "Smart AI B4CK3NDD_SL33P",
+                "serialNumber": "SN71830",
+                "condition": "Średni",
+                "categoryId": 1,
+                "askingPrice": null
+            }
+        ]
+    }
+]

@@ -1,0 +1,104 @@
+.tree-view {
+  font-family: 'Courier New', monospace;
+}
+
+.category-item, .subcategory-item {
+  margin-bottom: 5px;
+}
+
+.category-name {
+  margin-left: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.category-name:hover {
+  text-decoration: underline;
+  color: #0d6efd;
+}
+
+/* Style dla widoku drzewa w modalu */
+.tree-view-modal {
+  font-family: 'Consolas', 'Courier New', monospace;
+  white-space: pre;
+}
+
+.tree-structure {
+  padding: 5px;
+}
+
+.tree-node {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.category-actions {
+  margin-left: auto;
+}
+
+.tree-icon {
+  cursor: pointer;
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+}
+
+.small-circle {
+  font-size: 0.5rem;
+}
+
+.subcategories {
+  position: relative;
+}
+
+.tree-branch {
+  position: absolute;
+  left: 9px;
+  width: 1px;
+  height: 100%;
+  background-color: #ccc;
+}
+
+.tree-branch-horizontal {
+  display: inline-block;
+  width: 10px;
+  height: 1px;
+  background-color: #ccc;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+/* Style dla modalów */
+.modal-backdrop {
+  opacity: 0.5;
+}
+
+.sortable-header {
+  cursor: pointer;
+}
+
+.sortable-header:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Style dla drzewa kategorii */
+.category-tree, .category-subtree {
+  margin-bottom: 5px;
+}
+
+.category-node {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.category-node:hover {
+  background-color: #f8f9fa;
+}
+
+.expand-icon {
+  cursor: pointer;
+  width: 20px;
+  text-align: center;
+  margin-right: 5px;
+}

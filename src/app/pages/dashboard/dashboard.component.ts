@@ -8,6 +8,7 @@ import { AddItemComponent } from '../add-item/add-item.component';
 import { EmployeesComponent } from '../employees/employees.component';
 import { CustomersComponent } from '../customers/customers.component';
 import { PawnsComponent } from '../pawn/pawn.component';
+import { CategoriesComponent } from '../categories/categories.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +22,8 @@ import { PawnsComponent } from '../pawn/pawn.component';
     AddItemComponent,
     EmployeesComponent,
     CustomersComponent,
-    PawnsComponent
+    PawnsComponent,
+    CategoriesComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
@@ -30,6 +32,6 @@ export class DashboardComponent {
   activeComponent: string = 'inventory';
 
   logout() {
-    window.location.reload(); // Tymczasowe rozwiązanie do wylogowania
+    window.location.reload();
   }
 }

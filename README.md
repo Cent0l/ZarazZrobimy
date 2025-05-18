@@ -84,18 +84,13 @@ System umożliwia zarządzanie inwentarzem lombardu, oferując funkcje dodawania
 
 ## Zespół
 ### Backend:
-- Mateusz
 - Adam Czajkowski
 
 ### Frontend:
 - Kuba
 - Adam Czaplicki 
 
-### Interface:
-- Kamil Dawid *(tabelki + diagramy)*
-
 ### Dodatkowe:
-- **Diagramy:** Centol może pomagać
 - **Bazy danych:** Kuba
 
 

@@ -102,8 +102,25 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="category{{i}}" class="form-label">Kategoria *</label>
+
+                    <!-- Loader podczas ładowania kategorii -->
+                    <div *ngIf="isLoadingCategories" class="d-flex align-items-center mb-2">
+                      <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                        <span class="visually-hidden">Ładowanie...</span>
+                      </div>
+                      <span>Pobieranie kategorii...</span>
+                    </div>
+
+                    <!-- Komunikat o błędzie kategorii -->
+                    <div *ngIf="categoriesLoadError" class="alert alert-danger py-2">
+                      {{ categoriesLoadError }}
+                      <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="loadCategories()">Spróbuj ponownie</button>
+                    </div>
+
                     <select class="form-select" id="category{{i}}" [(ngModel)]="item.categoryId" name="categoryId{{i}}" required>
-                      <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+                      <option *ngFor="let category of categories" [value]="category.id">
+                        {{ getCategoryPath(category.id) }}
+                      </option>
                     </select>
                   </div>
                 </div>

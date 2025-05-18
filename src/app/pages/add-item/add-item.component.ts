@@ -13,6 +13,14 @@ interface Customer {
   doNotServe: boolean;
 }
 
+interface Category {
+  id: number;
+  categoryName: string;
+  description: string;
+  parentCategoryId: number | null;
+  subcategories?: Category[];
+}
+
 interface PurchaseItem {
   categoryId: number;
   name: string;
@@ -51,6 +59,11 @@ export class AddItemComponent implements OnInit {
   isLoadingCustomers = false;
   customerLoadError: string | null = null;
 
+  // Lista kategorii
+  categories: Category[] = [];
+  isLoadingCategories = false;
+  categoriesLoadError: string | null = null;
+
   // For existing customer selection
   useExistingCustomer = false;
   customerId: number | null = null;
@@ -83,11 +96,6 @@ export class AddItemComponent implements OnInit {
 
   // Form options
   conditions = ['Nowy', 'Bardzo dobry', 'Dobry', 'Średni', 'Dostateczny'];
-  categories = [
-    { id: 1, name: 'Elektronika' },
-    { id: 2, name: 'Biżuteria' },
-    { id: 3, name: 'Narzędzia' }
-  ];
 
   idTypes = [
     { value: 'passport', label: 'Paszport' },
@@ -104,6 +112,8 @@ export class AddItemComponent implements OnInit {
   ngOnInit(): void {
     // Pobieramy listę klientów na starcie komponentu
     this.loadCustomers();
+    // Pobieramy listę kategorii
+    this.loadCategories();
   }
 
   // Przygotowanie nagłówków z tokenem uwierzytelniającym
@@ -142,6 +152,55 @@ export class AddItemComponent implements OnInit {
         }
       }
     });
+  }
+
+  // Pobieranie listy kategorii z API
+  loadCategories(): void {
+    if (!this.authToken) {
+      return;
+    }
+
+    this.isLoadingCategories = true;
+    this.categoriesLoadError = null;
+
+    this.http.get<Category[]>(`${this.apiUrl}/categories`, {
+      headers: this.getAuthHeaders()
+    }).subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        this.isLoadingCategories = false;
+      },
+      error: (err) => {
+        console.error('Błąd podczas pobierania listy kategorii:', err);
+        this.categoriesLoadError = 'Nie udało się pobrać listy kategorii. Spróbuj ponownie.';
+        this.isLoadingCategories = false;
+
+        // Obsługa błędu autoryzacji
+        if (err.status === 401) {
+          alert('Sesja wygasła. Proszę zalogować się ponownie.');
+          localStorage.removeItem('authToken');
+          this.router.navigate(['/login']);
+        }
+      }
+    });
+  }
+
+  // Metoda to get category path - dla lepszej czytelności w dropdownie
+  getCategoryPath(categoryId: number): string {
+    const paths: string[] = [];
+    let currentCategory = this.categories.find(c => c.id === categoryId);
+
+    while (currentCategory) {
+      paths.unshift(currentCategory.categoryName);
+
+      if (currentCategory.parentCategoryId) {
+        currentCategory = this.categories.find(c => c.id === currentCategory?.parentCategoryId);
+      } else {
+        currentCategory = undefined;
+      }
+    }
+
+    return paths.join(' / ');
   }
 
   addItem(): void {

@@ -36,6 +36,13 @@ interface Transaction {
   items: TransactionItem[];
 }
 
+interface Category {
+  id: number;
+  categoryName: string;
+  description: string;
+  parentCategoryId: number | null;
+}
+
 @Component({
   selector: 'app-history',
   standalone: true,
@@ -88,6 +95,7 @@ interface Transaction {
 export class HistoryComponent implements OnInit, AfterViewInit {
   transactions: Transaction[] = [];
   originalTransactions: Transaction[] = [];
+  categories: Category[] = [];
   isLoading = true;
   error: string | null = null;
   authToken: string | null = null;
@@ -113,6 +121,7 @@ export class HistoryComponent implements OnInit, AfterViewInit {
 
     if (this.authToken) {
       this.fetchSaleTransactions();
+      this.fetchCategories();
     } else {
       this.error = 'Brak autoryzacji. Proszę zalogować się na stronie głównej.';
       this.isLoading = false;
@@ -162,6 +171,35 @@ export class HistoryComponent implements OnInit, AfterViewInit {
         this.isLoading = false;
       }
     });
+  }
+
+  fetchCategories(): void {
+    this.http.get<Category[]>('/api/categories', {
+      headers: this.getAuthHeaders()
+    }).subscribe({
+      next: (data) => {
+        this.categories = data;
+        setTimeout(() => this.initTooltips(), 100);
+      },
+      error: (err) => {
+        console.error('Błąd pobierania kategorii:', err);
+        if (err.status === 401) {
+          this.error = 'Błąd autoryzacji. Proszę zalogować się ponownie.';
+          this.authToken = null;
+          localStorage.removeItem('authToken');
+        }
+      }
+    });
+  }
+
+  getCategoryName(categoryId: number): string {
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.categoryName : 'Nieznana kategoria';
+  }
+
+  getCategoryDescription(categoryId: number): string {
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.description : '';
   }
 
   showItemDetails(item: TransactionItem, transaction: Transaction): void {
@@ -220,10 +258,10 @@ export class HistoryComponent implements OnInit, AfterViewInit {
         // Sortowanie po zysku
         valueA = this.calculateMargin(itemA, transactionA);
         valueB = this.calculateMargin(itemB, transactionB);
-      } else if (column === 'profitPercentage') {
-        // Sortowanie po zysku procentowym
-        valueA = this.calculateMarginPercentage(itemA, transactionA);
-        valueB = this.calculateMarginPercentage(itemB, transactionB);
+      } else if (column === 'categoryId') {
+        // Sortowanie po nazwie kategorii
+        valueA = this.getCategoryName(itemA.categoryId);
+        valueB = this.getCategoryName(itemB.categoryId);
       } else {
         valueA = itemA[column as keyof TransactionItem];
         valueB = itemB[column as keyof TransactionItem];
@@ -321,10 +359,5 @@ export class HistoryComponent implements OnInit, AfterViewInit {
 
   calculateMargin(item: TransactionItem, transaction: Transaction): number {
     return transaction.totalAmount - item.price;
-  }
-
-  calculateMarginPercentage(item: TransactionItem, transaction: Transaction): number {
-    if (item.price === 0) return 0;
-    return Number(((transaction.totalAmount - item.price) / item.price * 100).toFixed(2));
   }
 }

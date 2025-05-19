@@ -845,61 +845,43 @@ export class PawnsComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // Additional check if pawn can be forfeited
+    // Dodatkowe sprawdzenia
     if (this.pawnToForfeit.relatedTransactionId) {
       this.error = "Ten zastaw został już wykupiony lub przedawniony.";
       return;
     }
 
-    if (this.pawnToForfeit.status !== 'expired') {
-      this.error = `Tylko przeterminowane zastawy mogą zostać przedawnione. Obecny status: ${this.getStatusDisplay(this.pawnToForfeit.status || '')}.`;
+    // W przypadku przedawnienia, dopuszczamy zarówno zastawy aktywne jak i przeterminowane
+    if (this.pawnToForfeit.status !== 'expired' && this.pawnToForfeit.status !== 'active') {
+      this.error = `Tylko aktualne lub przeterminowane zastawy mogą zostać przedawnione. Obecny status: ${this.getStatusDisplay(this.pawnToForfeit.status || '')}.`;
       return;
     }
 
     this.forfeitureInProgress = true;
     this.error = null;
 
-    // Przygotowanie danych przedawnienia
-    const forfeitureData = {
-      pawnTransactionId: this.pawnToForfeit.id,
-      notes: `Przedawniony w dniu ${new Date().toISOString().split('T')[0]}`
+    // Przygotowanie danych do przedawnienia - używamy PATCH zamiast POST
+    const updateData = {
+      newType: "purchase",  // Zmieniamy typ na "purchase"
+      notes: `Przedawniony w dniu ${new Date().toISOString().split('T')[0]}`,
+      // Możemy dodać cenę końcową (opcjonalnie)
+      finalPrice: this.pawnToForfeit.redemptionPrice // Używamy redemptionPrice jako finalPrice
     };
 
-    console.log('Wysyłam żądanie przedawnienia zastawu:', forfeitureData);
+    console.log('Wysyłam żądanie przedawnienia zastawu (zmiana na purchase):', updateData);
 
-    // Zakładamy, że API ma endpoint /forfeiture
-    this.http.post('/api/transactions/forfeiture', forfeitureData, {
+    // Używamy endpoint PATCH /api/transactions/{id}/type
+    this.http.patch<PawnTransaction>(`/api/transactions/${this.pawnToForfeit.id}/type`, updateData, {
       headers: this.getAuthHeaders()
     }).subscribe({
       next: (response) => {
-        console.log('Zastaw przedawniony, odpowiedź API:', response);
-        this.successMessage = 'Zastaw został oznaczony jako przedawniony!';
+        console.log('Zastaw pomyślnie zmieniony na przedawniony (typ purchase), odpowiedź API:', response);
+        this.successMessage = 'Zastaw został pomyślnie przedawniony!';
         this.showForfeitureModal = false;
         this.forfeitureInProgress = false;
 
-        // Ręczna aktualizacja statusu zastawu w lokalnych danych
-        const index = this.originalPawns.findIndex(p => p.id === this.pawnToForfeit?.id);
-        if (index !== -1) {
-          console.log(`Aktualizuję status zastawu ID ${this.pawnToForfeit?.id} na 'forfeited'`);
-
-          // Dodajemy pole relatedTransactionId
-          if (response && 'id' in response) {
-            this.originalPawns[index].relatedTransactionId = (response as any).id;
-          } else {
-            this.originalPawns[index].relatedTransactionId = 2; // Domyślna wartość, jeśli API nie zwraca ID
-          }
-
-          this.originalPawns[index].status = 'forfeited';
-
-          // Aktualizacja głównej tablicy zastawów
-          const mainIndex = this.pawns.findIndex(p => p.id === this.pawnToForfeit?.id);
-          if (mainIndex !== -1) {
-            this.pawns[mainIndex] = {...this.originalPawns[index]};
-          }
-        }
-
-        // Odśwież listę zastawów z API (jako zapasowa opcja)
-        setTimeout(() => this.fetchPawns(), 500);
+        // Odświeżamy listę zastawów
+        this.fetchPawns();
 
         // Ukryj wiadomość po 3 sekundach
         setTimeout(() => {
@@ -917,62 +899,9 @@ export class PawnsComponent implements OnInit, AfterViewInit {
         } else if (err.status === 400 && err.error && err.error.error) {
           // Bardziej szczegółowa obsługa błędów
           const errorMsg = err.error.error;
-          if (errorMsg.includes('redeemed or forfeited')) {
-            this.error = 'Ten zastaw został już wykupiony lub jest przedawniony.';
-
-            // Jeśli backend twierdzi, że zastaw jest już przedawniony, aktualizujemy UI
-            const index = this.originalPawns.findIndex(p => p.id === this.pawnToForfeit?.id);
-            if (index !== -1) {
-              this.originalPawns[index].relatedTransactionId = 999; // Dummy ID
-              this.originalPawns[index].status = 'forfeited';
-
-              // Aktualizacja głównej tablicy
-              const mainIndex = this.pawns.findIndex(p => p.id === this.pawnToForfeit?.id);
-              if (mainIndex !== -1) {
-                this.pawns[mainIndex] = {...this.originalPawns[index]};
-              }
-
-              // Zamknij modal
-              this.showForfeitureModal = false;
-
-              // Odśwież listę kompletnie
-              setTimeout(() => this.fetchPawns(), 500);
-            }
-          } else {
-            this.error = `Błąd: ${errorMsg}`;
-          }
+          this.error = `Błąd: ${errorMsg}`;
         } else {
           this.error = `Wystąpił błąd podczas przedawniania zastawu: ${err.message || 'Nieznany błąd'}`;
-
-          // Implementacja UI-only jako ostateczność, jeśli API nie obsługuje przedawnienia
-          if (confirm('API może nie obsługiwać przedawnienia. Czy chcesz oznaczyć zastaw jako przedawniony tylko w UI?')) {
-            // Aktualizacja w UI
-            const index = this.originalPawns.findIndex(p => p.id === this.pawnToForfeit?.id);
-            if (index !== -1) {
-              console.log(`Aktualizuję status zastawu ID ${this.pawnToForfeit?.id} na 'forfeited' (tylko UI)`);
-
-              // Dodanie pola relatedTransactionId symuluje wykupienie/przedawnienie
-              this.originalPawns[index].relatedTransactionId = 999999; // Dummy ID
-              this.originalPawns[index].status = 'forfeited'; // Nowy status
-
-              // Aktualizacja głównej tablicy
-              const mainIndex = this.pawns.findIndex(p => p.id === this.pawnToForfeit?.id);
-              if (mainIndex !== -1) {
-                this.pawns[mainIndex] = {...this.originalPawns[index]};
-              }
-
-              // Odśwież listę z filtrowaniem
-              this.applyStatusFilter();
-
-              this.successMessage = 'Zastaw został oznaczony jako przedawniony (tylko w UI)!';
-              this.showForfeitureModal = false;
-
-              // Ukryj wiadomość po 3 sekundach
-              setTimeout(() => {
-                this.successMessage = null;
-              }, 3000);
-            }
-          }
         }
       }
     });

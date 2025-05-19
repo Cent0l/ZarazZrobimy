@@ -55,6 +55,13 @@ interface Employee {
   fullName?: string;
 }
 
+interface Category {
+  id: number;
+  categoryName: string;
+  description: string;
+  parentCategoryId: number | null;
+}
+
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
@@ -66,6 +73,7 @@ export class InventoryComponent implements OnInit, AfterViewInit {
   transactions: Transaction[] = [];
   originalTransactions: Transaction[] = [];
   employees: Employee[] = [];
+  categories: Category[] = [];
   isLoading: boolean = true;
   error: string | null = null;
 
@@ -103,6 +111,7 @@ export class InventoryComponent implements OnInit, AfterViewInit {
     if (this.authToken) {
       this.fetchTransactions();
       this.fetchEmployees();
+      this.fetchCategories();
     } else {
       this.showLoginModal = true;
       this.isLoading = false;
@@ -134,6 +143,7 @@ export class InventoryComponent implements OnInit, AfterViewInit {
         this.loginInProgress = false;
         this.fetchTransactions();
         this.fetchEmployees();
+        this.fetchCategories();
       },
       error: (err) => {
         console.error('Błąd logowania:', err);
@@ -205,6 +215,36 @@ export class InventoryComponent implements OnInit, AfterViewInit {
     });
   }
 
+  fetchCategories(): void {
+    this.http.get<Category[]>('/api/categories', {
+      headers: this.getAuthHeaders()
+    }).subscribe({
+      next: (data) => {
+        this.categories = data;
+        setTimeout(() => this.initTooltips(), 100);
+      },
+      error: (err) => {
+        console.error('Błąd pobierania kategorii:', err);
+        if (err.status === 401) {
+          this.error = 'Błąd autoryzacji. Proszę zalogować się ponownie.';
+          this.authToken = null;
+          localStorage.removeItem('authToken');
+          this.showLoginModal = true;
+        }
+      }
+    });
+  }
+
+  getCategoryName(categoryId: number): string {
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.categoryName : 'Nieznana kategoria';
+  }
+
+  getCategoryDescription(categoryId: number): string {
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.description : '';
+  }
+
   openSaleModal(item: TransactionItem): void {
     this.selectedItem = item;
     // Find the transaction that contains this item
@@ -246,44 +286,34 @@ export class InventoryComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // Get employee ID from the employee name if possible
+    // Znajdź ID pracownika na podstawie jego pełnego imienia
     let employeeId: number | null = null;
     const employee = this.employees.find(e => e.fullName === this.saleData.soldBy);
     if (employee) {
       employeeId = employee.id;
     }
 
-    // Zapisz oryginalną cenę zakupu do zmiennej
-    const purchasePrice = this.selectedItem.price;
+    // Notatki o sprzedaży
+    const notesData = `Sprzedane przez: ${this.saleData.soldBy} w dniu ${this.saleData.saleDate}`;
 
-    // Create sale transaction with both prices
-    const saleTransaction = {
-      customerId: this.selectedTransaction.customerId,
-      employeeId: employeeId,
-      transactionType: "sale",
-      totalAmount: this.saleData.finalPrice,
-      items: [
-        {
-          itemId: this.selectedItem.itemId,
-          price: purchasePrice,  // Oryginalna cena zakupu przedmiotu
-          askingPrice: this.selectedItem.askingPrice, // Oryginalna cena wystawienia
-          sellingPrice: this.saleData.finalPrice,  // Finalna cena sprzedaży z formularza
-        }
-      ],
-      notes: `Sprzedane przez: ${this.saleData.soldBy} w dniu ${this.saleData.saleDate}`
+    // Dane dla żądania zmiany typu transakcji
+    const updateData = {
+      newType: "sale",
+      notes: notesData,
+      finalPrice: this.saleData.finalPrice,
+      employeeId: employeeId
     };
 
-    // Make the API call to create sale transaction
-    this.http.post('/api/transactions/sale', saleTransaction, {
+    // Wysłanie żądania do API
+    this.http.patch(`/api/transactions/${this.selectedTransaction.id}/type`, updateData, {
       headers: this.getAuthHeaders()
     }).subscribe({
       next: (response) => {
-        console.log('Transakcja sprzedaży utworzona:', response);
-        // After sale is created, delete the item from original transaction
-        this.deleteItemFromTransaction();
+        console.log('Transakcja zaktualizowana:', response);
+        this.handleSuccessfulSale();
       },
       error: (err) => {
-        console.error('Błąd tworzenia transakcji sprzedaży:', err);
+        console.error('Błąd aktualizacji transakcji:', err);
         this.isProcessingSale = false;
 
         if (err.status === 401) {
@@ -303,76 +333,6 @@ export class InventoryComponent implements OnInit, AfterViewInit {
     });
   }
 
-  deleteItemFromTransaction(): void {
-    if (!this.selectedItem || !this.selectedTransaction) {
-      this.saleError = "Nie można znaleźć transakcji dla wybranego przedmiotu.";
-      this.isProcessingSale = false;
-      return;
-    }
-
-    const transactionId = this.selectedTransaction.id;
-    const itemId = this.selectedItem.id;
-
-    // If this is the last item in the transaction, delete the entire transaction
-    if (this.selectedTransaction.items.length === 1) {
-      // Usuwamy całą transakcję
-      this.http.delete(`/api/transactions/${transactionId}`, {
-        headers: this.getAuthHeaders()
-      }).subscribe({
-        next: () => {
-          console.log(`Transakcja ${transactionId} usunięta pomyślnie`);
-          this.handleSuccessfulSale();
-        },
-        error: (err) => {
-          console.error(`Błąd usuwania transakcji ${transactionId}:`, err);
-          this.isProcessingSale = false;
-
-          if (err.status === 401) {
-            this.saleError = 'Sesja wygasła. Proszę zalogować się ponownie.';
-            this.authToken = null;
-            localStorage.removeItem('authToken');
-            this.showLoginModal = true;
-          } else {
-            this.saleError = `Błąd usuwania transakcji: ${err.message}`;
-
-            // For testing - if API fails, offer to simulate success
-            if (confirm('Błąd API. Czy chcesz zasymulować udaną sprzedaż?')) {
-              this.handleSuccessfulSale(true);
-            }
-          }
-        }
-      });
-    } else {
-      // If there are more items, just remove this one item
-      this.http.delete(`/api/transactions/${transactionId}/items/${itemId}`, {
-        headers: this.getAuthHeaders()
-      }).subscribe({
-        next: () => {
-          console.log(`Przedmiot ${itemId} usunięty z transakcji ${transactionId}`);
-          this.handleSuccessfulSale();
-        },
-        error: (err) => {
-          console.error(`Błąd usuwania przedmiotu ${itemId} z transakcji ${transactionId}:`, err);
-          this.isProcessingSale = false;
-
-          if (err.status === 401) {
-            this.saleError = 'Sesja wygasła. Proszę zalogować się ponownie.';
-            this.authToken = null;
-            localStorage.removeItem('authToken');
-            this.showLoginModal = true;
-          } else {
-            this.saleError = `Błąd usuwania przedmiotu: ${err.message}`;
-
-            // For testing - if API fails, offer to simulate success
-            if (confirm('Błąd API. Czy chcesz zasymulować udaną sprzedaż?')) {
-              this.handleSuccessfulSale(true);
-            }
-          }
-        }
-      });
-    }
-  }
-
   handleSuccessfulSale(isSimulation: boolean = false): void {
     // Show appropriate success message
     if (isSimulation) {
@@ -380,7 +340,20 @@ export class InventoryComponent implements OnInit, AfterViewInit {
     }
 
     // Update UI
-    this.removeItemFromUI(this.selectedItem!.id);
+    if (!isSimulation) {
+      // Nie usuwamy transakcji z UI, po prostu aktualizujemy jej typ
+      if (this.selectedTransaction && this.transactions) {
+        // Znajdź transakcję w tablicy transactions
+        const transactionIndex = this.transactions.findIndex(t => t.id === this.selectedTransaction!.id);
+        if (transactionIndex >= 0) {
+          // Zmień typ transakcji
+          this.transactions[transactionIndex].transactionType = 'sale';
+          // Zmień totalAmount na cenę sprzedaży
+          this.transactions[transactionIndex].totalAmount = this.saleData.finalPrice;
+        }
+      }
+    }
+
     this.isProcessingSale = false;
     this.saleSuccess = true;
 
@@ -392,29 +365,6 @@ export class InventoryComponent implements OnInit, AfterViewInit {
         this.fetchTransactions();
       }
     }, 1500);
-  }
-
-  removeItemFromUI(itemId: number): void {
-    // Filter out the transaction if this was its only item
-    this.transactions = this.transactions.filter(transaction => {
-      if (transaction.items.length === 1 && transaction.items[0].id === itemId) {
-        return false; // Remove this transaction
-      }
-
-      // Otherwise, keep the transaction but remove the sold item
-      transaction.items = transaction.items.filter(item => item.id !== itemId);
-      return transaction.items.length > 0;
-    });
-
-    // Update originalTransactions as well to keep them in sync
-    this.originalTransactions = this.originalTransactions.filter(transaction => {
-      if (transaction.items.length === 1 && transaction.items[0].id === itemId) {
-        return false;
-      }
-
-      transaction.items = transaction.items.filter(item => item.id !== itemId);
-      return transaction.items.length > 0;
-    });
   }
 
   closeSaleModal(): void {
@@ -470,6 +420,10 @@ export class InventoryComponent implements OnInit, AfterViewInit {
         // Use numeric value for condition sorting
         valueA = this.getConditionRating(itemA.condition);
         valueB = this.getConditionRating(itemB.condition);
+      } else if (column === 'categoryId') {
+        // For sorting by category, use category name
+        valueA = this.getCategoryName(itemA.categoryId);
+        valueB = this.getCategoryName(itemB.categoryId);
       } else {
         valueA = itemA[column as keyof TransactionItem];
         valueB = itemB[column as keyof TransactionItem];

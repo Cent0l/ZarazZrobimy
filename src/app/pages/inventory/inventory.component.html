@@ -65,6 +65,12 @@
             {{ sortDirection === 'asc' ? '↑' : '↓' }}
           </span>
         </th>
+        <th (click)="sort('categoryId')" class="sortable-header">
+          Kategoria
+          <span *ngIf="sortColumn === 'categoryId'" class="ms-1">
+            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+          </span>
+        </th>
         <th (click)="sort('condition')" class="sortable-header">
           Stan
           <span *ngIf="sortColumn === 'condition'" class="ms-1">
@@ -92,6 +98,11 @@
             <td>{{ item.model }}</td>
             <td>{{ item.serialNumber }}</td>
             <td>{{ item.description }}</td>
+            <td>
+              <span data-bs-toggle="tooltip" [attr.data-bs-title]="getCategoryDescription(item.categoryId)" class="cursor-help">
+                {{ getCategoryName(item.categoryId) }}
+              </span>
+            </td>
             <td>
               <span data-bs-toggle="tooltip" [attr.data-bs-title]="item.condition" class="cursor-help">
                 <ng-container [ngSwitch]="getConditionRating(item.condition)">
@@ -141,6 +152,11 @@
             <p><strong>Marka:</strong> {{ selectedItem.brand }}</p>
             <p><strong>Model:</strong> {{ selectedItem.model }}</p>
             <p><strong>Nr seryjny:</strong> {{ selectedItem.serialNumber }}</p>
+            <p><strong>Kategoria:</strong>
+              <span data-bs-toggle="tooltip" [attr.data-bs-title]="getCategoryDescription(selectedItem.categoryId)" class="cursor-help">
+                {{ getCategoryName(selectedItem.categoryId) }}
+              </span>
+            </p>
             <p><strong>Stan:</strong>
               <span class="text-warning">
                 <ng-container [ngSwitch]="getConditionRating(selectedItem.condition)">

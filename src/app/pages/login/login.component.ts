@@ -25,6 +25,7 @@ export class LoginPageComponent {
   constructor(private http: HttpClient) {}
 
   login() {
+    // Podstawowa walidacja formularza
     if (!this.username || !this.password) {
       this.error = 'Wprowadź login i hasło';
       return;
@@ -33,7 +34,7 @@ export class LoginPageComponent {
     this.loading = true;
     this.error = '';
 
-    // Zmienione z login na username zgodnie z oczekiwaniami API
+    // Przygotowanie danych logowania
     const credentials = {
       username: this.username,
       password: this.password
@@ -41,7 +42,7 @@ export class LoginPageComponent {
 
     console.log('Wysyłam żądanie logowania:', credentials);
 
-    // Dodanie nagłówków i poprawiona ścieżka (usunięta duplikacja)
+    // Konfiguracja nagłówków
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -63,17 +64,51 @@ export class LoginPageComponent {
         }),
         catchError((err: HttpErrorResponse) => {
           console.error('Błąd logowania:', err);
-
-          if (err.status === 0) {
-            this.error = 'Nie można połączyć się z serwerem. Sprawdź, czy serwer jest uruchomiony.';
-          } else {
-            this.error = `Błąd logowania (${err.status}): ${err.error?.message || err.message || 'Nieznany błąd'}`;
-          }
-
+          this.handleLoginError(err);
           this.loading = false;
           return of(null);
         })
       )
       .subscribe();
+  }
+
+  /**
+   * Obsługa różnych kodów błędów HTTP
+   */
+  private handleLoginError(err: HttpErrorResponse): void {
+    if (!err.status) {
+      this.error = 'Nie można połączyć się z serwerem. Sprawdź połączenie internetowe lub skontaktuj się z administratorem.';
+      return;
+    }
+
+    switch (err.status) {
+      case 401:
+        this.error = 'Nieprawidłowy login lub hasło. Spróbuj ponownie.';
+        break;
+      case 403:
+        this.error = 'Brak uprawnień do zalogowania się. Skontaktuj się z administratorem.';
+        break;
+      case 404:
+        this.error = 'Serwer nie znalazł usługi logowania. Skontaktuj się z administratorem.';
+        break;
+      case 429:
+        this.error = 'Zbyt wiele prób logowania. Spróbuj ponownie za kilka minut.';
+        break;
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        this.error = 'Błąd serwera. Spróbuj ponownie później lub skontaktuj się z administratorem.';
+        break;
+      default:
+        // Jeśli serwer przesłał specyficzny komunikat błędu, używamy go
+        if (err.error && typeof err.error === 'object' && err.error.message) {
+          this.error = `Błąd logowania: ${err.error.message}`;
+        } else if (err.error && typeof err.error === 'string') {
+          this.error = `Błąd logowania: ${err.error}`;
+        } else {
+          this.error = `Wystąpił nieoczekiwany błąd (${err.status}). Spróbuj ponownie lub skontaktuj się z administratorem.`;
+        }
+    }
   }
 }

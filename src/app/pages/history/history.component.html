@@ -25,24 +25,18 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-4">
             <h6>Całkowity koszt zakupu</h6>
             <p>{{ totalBought | number:'1.2-2' }} PLN</p>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
             <h6>Całkowita wartość sprzedaży</h6>
             <p>{{ totalSold | number:'1.2-2' }} PLN</p>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
             <h6>Całkowity zysk</h6>
             <p [ngClass]="getMarginClass(totalProfit)">
               {{ totalProfit | number:'1.2-2' }} PLN
-            </p>
-          </div>
-          <div class="col-md-3">
-            <h6>Zysk procentowy</h6>
-            <p [ngClass]="getMarginClass(totalProfitPercentage)">
-              {{ totalProfitPercentage | number:'1.2-2' }}%
             </p>
           </div>
         </div>
@@ -64,9 +58,9 @@
                 {{ sortDirection === 'asc' ? '↑' : '↓' }}
               </span>
           </th>
-          <th (click)="sort('customerName')" class="sortable-header">
-            Kupujący
-            <span *ngIf="sortColumn === 'customerName'" class="ms-1">
+          <th (click)="sort('employeeName')" class="sortable-header">
+            Sprzedane przez
+            <span *ngIf="sortColumn === 'employeeName'" class="ms-1">
                 {{ sortDirection === 'asc' ? '↑' : '↓' }}
               </span>
           </th>
@@ -85,6 +79,12 @@
           <th (click)="sort('model')" class="sortable-header">
             Model
             <span *ngIf="sortColumn === 'model'" class="ms-1">
+                {{ sortDirection === 'asc' ? '↑' : '↓' }}
+              </span>
+          </th>
+          <th (click)="sort('categoryId')" class="sortable-header">
+            Kategoria
+            <span *ngIf="sortColumn === 'categoryId'" class="ms-1">
                 {{ sortDirection === 'asc' ? '↑' : '↓' }}
               </span>
           </th>
@@ -112,12 +112,6 @@
                 {{ sortDirection === 'asc' ? '↑' : '↓' }}
               </span>
           </th>
-          <th (click)="sort('profitPercentage')" class="sortable-header">
-            %
-            <span *ngIf="sortColumn === 'profitPercentage'" class="ms-1">
-                {{ sortDirection === 'asc' ? '↑' : '↓' }}
-              </span>
-          </th>
         </tr>
         </thead>
         <tbody>
@@ -125,10 +119,15 @@
           <ng-container *ngFor="let item of transaction.items">
             <tr>
               <td data-label="Data">{{ transaction.transactionDate }}</td>
-              <td data-label="Kupujący">{{ transaction.customerName }}</td>
+              <td data-label="Sprzedane przez">{{ transaction.employeeName }}</td>
               <td data-label="Przedmiot">{{ item.itemName }}</td>
               <td data-label="Marka">{{ item.brand }}</td>
               <td data-label="Model">{{ item.model }}</td>
+              <td data-label="Kategoria">
+                <span data-bs-toggle="tooltip" [attr.data-bs-title]="getCategoryDescription(item.categoryId)" class="cursor-help">
+                  {{ getCategoryName(item.categoryId) }}
+                </span>
+              </td>
               <td data-label="Stan">
                   <span data-bs-toggle="tooltip" [attr.data-bs-title]="item.condition" class="cursor-help">
                     <ng-container [ngSwitch]="getConditionRating(item.condition)">
@@ -145,9 +144,6 @@
               <td data-label="Sprzedaż" class="text-nowrap">{{ transaction.totalAmount | number:'1.2-2' }} PLN</td>
               <td data-label="Zysk" class="text-nowrap" [ngClass]="getMarginClass(calculateMargin(item, transaction))">
                 {{ calculateMargin(item, transaction) | number:'1.2-2' }} PLN
-              </td>
-              <td data-label="%" class="text-nowrap" [ngClass]="getMarginClass(calculateMarginPercentage(item, transaction))">
-                {{ calculateMarginPercentage(item, transaction) | number:'1.2-2' }}%
               </td>
             </tr>
           </ng-container>

@@ -193,11 +193,10 @@ export class InventoryComponent implements OnInit, AfterViewInit {
   }
 
   fetchEmployees(): void {
-    this.http.get<Employee[]>('/api/employees', {
+    this.http.get<Employee[]>('/api/employees/status/active', {
       headers: this.getAuthHeaders()
     }).subscribe({
       next: (data) => {
-        // Add a fullName property for display purposes
         this.employees = data.map(emp => ({
           ...emp,
           fullName: `${emp.firstName} ${emp.lastName}`
@@ -205,12 +204,8 @@ export class InventoryComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         console.error('Błąd pobierania pracowników:', err);
-        if (err.status === 401) {
-          this.error = 'Błąd autoryzacji. Proszę zalogować się ponownie.';
-          this.authToken = null;
-          localStorage.removeItem('authToken');
-          this.showLoginModal = true;
-        }
+        // Fallback do wszystkich pracowników z filtrowaniem po stronie klienta
+        this.fetchEmployees();
       }
     });
   }

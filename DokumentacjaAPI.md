@@ -1,3 +1,5 @@
+# API Documentation
+
 ## Authentication
 
 ### Login
@@ -20,23 +22,402 @@ Authenticates a user and returns a JWT token.
 ```json
 {
   "token": "string",
-  "employee": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string",
-    "role": {
-      "id": "integer",
-      "roleName": "string",
-      "description": "string",
-      "permissionsLevel": "integer",
-      "maxBuy": "integer"
-    }
-  }
+  "username": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "role": "string"
 }
 ```
 
 - **Error Response**:
   - **Code**: 401 UNAUTHORIZED
+  - **Content**: 
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+### Create Sale Transaction
+
+Creates a new sale transaction (selling items to customer).
+
+- **URL**: `/api/transactions/sale`
+- **Method**: `POST`
+- **Authorization**: Required (JWT Token)
+- **Request Body**:
+```json
+{
+  "customerId": "integer", // Optional
+  "items": [
+    {
+      "itemId": "integer",
+      "sellingPrice": "number"
+    }
+  ],
+  "notes": "string"
+}
+```
+- **Success Response**:
+  - **Code**: 201 CREATED
+  - **Content**: Created TransactionDTO
+```json
+{
+  "id": "integer",
+  "customerId": "integer",
+  "customerName": "string",
+  "employeeId": "integer",
+  "employeeName": "string",
+  "transactionDate": "date",
+  "transactionType": "sale",
+  "totalAmount": "number",
+  "notes": "string",
+  "items": [
+    {
+      "id": "integer",
+      "itemId": "integer",
+      "itemName": "string",
+      "description": "string",
+      "price": "number",
+      "brand": "string",
+      "model": "string",
+      "serialNumber": "string",
+      "condition": "string",
+      "categoryId": "integer",
+      "askingPrice": "number"
+    }
+  ]
+}
+```
+- **Error Response**:
+  - **Code**: 400 BAD REQUEST
+  - **Content**: 
+```json
+{
+  "error": "string"
+}
+```
+  OR
+  - **Code**: 401 UNAUTHORIZED
+  - **Content**: 
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+### Create Pawn Transaction
+
+Creates a new pawn transaction.
+
+- **URL**: `/api/transactions/pawn`
+- **Method**: `POST`
+- **Authorization**: Required (JWT Token)
+- **Request Body**:
+```json
+{
+  "customerId": "integer", // Optional if newCustomer is provided
+  "newCustomer": { // Optional if customerId is provided
+    "firstName": "string",
+    "lastName": "string",
+    "idType": "string", // enum: passport, driver_license, id_card, other
+    "idNumber": "string",
+    "doNotServe": "boolean"
+  },
+  "pawnDurationDays": "integer",
+  "interestRate": "number",
+  "items": [
+    {
+      "categoryId": "integer",
+      "name": "string",
+      "description": "string",
+      "serialNumber": "string",
+      "brand": "string",
+      "model": "string",
+      "condition": "string",
+      "loanAmount": "number"
+    }
+  ],
+  "notes": "string"
+}
+```
+- **Success Response**:
+  - **Code**: 201 CREATED
+  - **Content**: Created TransactionDTO
+```json
+{
+  "id": "integer",
+  "customerId": "integer",
+  "customerName": "string",
+  "employeeId": "integer",
+  "employeeName": "string",
+  "transactionDate": "date",
+  "transactionType": "pawn",
+  "totalAmount": "number",
+  "pawnDurationDays": "integer",
+  "interestRate": "number",
+  "redemptionPrice": "number",
+  "expiryDate": "date",
+  "notes": "string",
+  "items": [
+    {
+      "id": "integer",
+      "itemId": "integer",
+      "itemName": "string",
+      "description": "string",
+      "price": "number",
+      "brand": "string",
+      "model": "string",
+      "serialNumber": "string",
+      "condition": "string",
+      "categoryId": "integer",
+      "askingPrice": "number"
+    }
+  ]
+}
+```
+- **Error Response**:
+  - **Code**: 400 BAD REQUEST
+  - **Content**: 
+```json
+{
+  "error": "string"
+}
+```
+  OR
+  - **Code**: 401 UNAUTHORIZED
+  - **Content**: 
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+### Create Redemption Transaction
+
+Creates a new redemption transaction (customer redeeming pawned items).
+
+- **URL**: `/api/transactions/redemption`
+- **Method**: `POST`
+- **Authorization**: Required (JWT Token)
+- **Request Body**:
+```json
+{
+  "pawnTransactionId": "integer",
+  "notes": "string"
+}
+```
+- **Success Response**:
+  - **Code**: 201 CREATED
+  - **Content**: Created TransactionDTO
+```json
+{
+  "id": "integer",
+  "customerId": "integer",
+  "customerName": "string",
+  "employeeId": "integer",
+  "employeeName": "string",
+  "transactionDate": "date",
+  "transactionType": "redemption",
+  "totalAmount": "number",
+  "relatedTransactionId": "integer",
+  "notes": "string",
+  "items": [
+    {
+      "id": "integer",
+      "itemId": "integer",
+      "itemName": "string",
+      "description": "string",
+      "price": "number",
+      "brand": "string",
+      "model": "string",
+      "serialNumber": "string",
+      "condition": "string",
+      "categoryId": "integer",
+      "askingPrice": "number"
+    }
+  ]
+}
+```
+- **Error Response**:
+  - **Code**: 400 BAD REQUEST
+  - **Content**: 
+```json
+{
+  "error": "string"
+}
+```
+  OR
+  - **Code**: 401 UNAUTHORIZED
+  - **Content**: 
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+### Delete Transaction
+
+Deletes a transaction.
+
+- **URL**: `/api/transactions/{id}`
+- **Method**: `DELETE`
+- **URL Parameters**: `id=[integer]`
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**: 
+```json
+{
+  "deleted": true
+}
+```
+- **Error Response**:
+  - **Code**: 404 NOT FOUND
+
+### Delete Transaction with Cascade
+
+Deletes a transaction and clears all related transaction references.
+
+- **URL**: `/api/transactions/{id}/cascade`
+- **Method**: `DELETE`
+- **URL Parameters**: `id=[integer]`
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**: 
+```json
+{
+  "deleted": true
+}
+```
+- **Error Response**:
+  - **Code**: 404 NOT FOUND
+
+### Update Transaction Type
+
+Updates a transaction's type (e.g., from purchase to sale, or from pawn to redemption).
+
+- **URL**: `/api/transactions/{id}/type`
+- **Method**: `PATCH`
+- **URL Parameters**: `id=[integer]`
+- **Authorization**: Required (JWT Token)
+- **Request Body**:
+```json
+{
+  "newType": "string", // Target transaction type (e.g., "sale", "redemption")
+  "notes": "string", // Optional notes
+  "finalPrice": "number", // Optional final price for sales
+  "employeeId": "integer" // Optional employee ID for the transaction
+}
+```
+- **Success Response**:
+  - **Code**: 201 CREATED
+  - **Content**: Updated TransactionDTO
+```json
+{
+  "id": "integer",
+  "customerId": "integer",
+  "customerName": "string",
+  "employeeId": "integer",
+  "employeeName": "string",
+  "transactionDate": "date",
+  "transactionType": "string",
+  "totalAmount": "number",
+  "notes": "string",
+  "items": [
+    {
+      "id": "integer",
+      "itemId": "integer",
+      "itemName": "string",
+      "description": "string",
+      "price": "number",
+      "brand": "string",
+      "model": "string",
+      "serialNumber": "string",
+      "condition": "string",
+      "categoryId": "integer",
+      "askingPrice": "number"
+    }
+  ]
+}
+```
+- **Error Response**:
+  - **Code**: 400 BAD REQUEST
+  - **Content**: 
+```json
+{
+  "error": "string"
+}
+```
+  OR
+  - **Code**: 401 UNAUTHORIZED
+  - **Content**: 
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+## Items
+
+### Get Items by Category
+
+Retrieves all transaction items that belong to a specific category.
+
+- **URL**: `/api/items/by-category/{categoryId}`
+- **Method**: `GET`
+- **URL Parameters**: `categoryId=[integer]`
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**: Array of TransactionItemDTO objects
+```json
+[
+  {
+    "id": "integer",
+    "itemId": "integer",
+    "itemName": "string",
+    "description": "string",
+    "price": "number",
+    "brand": "string",
+    "model": "string",
+    "serialNumber": "string",
+    "condition": "string",
+    "categoryId": "integer",
+    "askingPrice": "number"
+  }
+]
+```
+
+## Error Codes
+
+- **200 OK**: Request succeeded
+- **201 CREATED**: Resource created successfully
+- **204 NO CONTENT**: Request succeeded but no content to return
+- **400 BAD REQUEST**: Invalid request data
+- **401 UNAUTHORIZED**: Authentication required or failed
+- **404 NOT FOUND**: Resource not found
+- **409 CONFLICT**: Conflict with current state of resource
+- **500 INTERNAL SERVER ERROR**: Server error
+
+## Authentication
+
+Most endpoints require JWT authentication. Include the token in the Authorization header:
+
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+## Notes
+
+1. **Date Format**: All dates should be in ISO format (YYYY-MM-DD)
+2. **Numbers**: Decimal numbers should be provided as numbers or strings with appropriate precision
+3. **Enums**: 
+   - Customer ID Types: `passport`, `driver_license`, `id_card`, `other`
+   - Employee Status: `active`, `inactive`, `on_leave`, `terminated`
+   - Transaction Types: `purchase`, `sale`, `pawn`, `redemption`, `forfeiture`
+   - Item Status: `in_inventory`, `pawned`, `sold`, `redeemed`, `forfeited`
+4. **Parent-Child Categories**: Categories can have parent-child relationships through the `parentCategoryId` field
+5. **Transaction Relationships**: Redemption and forfeiture transactions are linked to their original pawn transactions through `relatedTransactionId`
+6. **Customer Creation**: For purchase and pawn transactions, you can either provide an existing `customerId` or create a new customer by providing `newCustomer` data UNAUTHORIZED
   - **Content**: 
 ```json
 {
@@ -72,7 +453,8 @@ Retrieves all categories.
   {
     "id": "integer",
     "categoryName": "string",
-    "description": "string"
+    "description": "string",
+    "parentCategoryId": "integer"
   }
 ]
 ```
@@ -91,7 +473,8 @@ Retrieves a specific category by its ID.
 {
   "id": "integer",
   "categoryName": "string",
-  "description": "string"
+  "description": "string",
+  "parentCategoryId": "integer"
 }
 ```
 - **Error Response**:
@@ -111,7 +494,8 @@ Retrieves a specific category by its name.
 {
   "id": "integer",
   "categoryName": "string",
-  "description": "string"
+  "description": "string",
+  "parentCategoryId": "integer"
 }
 ```
 - **Error Response**:
@@ -126,8 +510,10 @@ Creates a new category.
 - **Request Body**:
 ```json
 {
+  "id": "integer", // Optional - for setting specific ID
   "categoryName": "string",
-  "description": "string"
+  "description": "string",
+  "parentCategoryId": "integer" // Optional - for subcategories
 }
 ```
 - **Success Response**:
@@ -137,7 +523,8 @@ Creates a new category.
 {
   "id": "integer",
   "categoryName": "string",
-  "description": "string"
+  "description": "string",
+  "parentCategoryId": "integer"
 }
 ```
 - **Error Response**:
@@ -160,7 +547,8 @@ Updates an existing category.
 ```json
 {
   "categoryName": "string",
-  "description": "string"
+  "description": "string",
+  "parentCategoryId": "integer" // Optional - for parent-child relationships
 }
 ```
 - **Success Response**:
@@ -170,7 +558,8 @@ Updates an existing category.
 {
   "id": "integer",
   "categoryName": "string",
-  "description": "string"
+  "description": "string",
+  "parentCategoryId": "integer"
 }
 ```
 - **Error Response**:
@@ -191,6 +580,7 @@ Deletes a category.
 - **URL**: `/api/categories/{id}`
 - **Method**: `DELETE`
 - **URL Parameters**: `id=[integer]`
+- **Query Parameters**: `cascade=[boolean]` (optional, default: false)
 - **Success Response**:
   - **Code**: 200 OK
   - **Content**: 
@@ -401,7 +791,10 @@ Retrieves all employees.
     "lastName": "string",
     "role": {
       "id": "integer",
-      "roleName": "string"
+      "roleName": "string",
+      "description": "string",
+      "permissionsLevel": "integer",
+      "maxBuy": "integer"
     },
     "hireDate": "date",
     "address": "string",
@@ -430,7 +823,10 @@ Retrieves a specific employee by ID.
   "lastName": "string",
   "role": {
     "id": "integer",
-    "roleName": "string"
+    "roleName": "string",
+    "description": "string",
+    "permissionsLevel": "integer",
+    "maxBuy": "integer"
   },
   "hireDate": "date",
   "address": "string",
@@ -536,7 +932,10 @@ Creates a new employee.
   "lastName": "string",
   "role": {
     "id": "integer",
-    "roleName": "string"
+    "roleName": "string",
+    "description": "string",
+    "permissionsLevel": "integer",
+    "maxBuy": "integer"
   },
   "hireDate": "date",
   "address": "string",
@@ -587,7 +986,10 @@ Updates an existing employee.
   "lastName": "string",
   "role": {
     "id": "integer",
-    "roleName": "string"
+    "roleName": "string",
+    "description": "string",
+    "permissionsLevel": "integer",
+    "maxBuy": "integer"
   },
   "hireDate": "date",
   "address": "string",
@@ -649,7 +1051,10 @@ Updates an employee's status.
   "lastName": "string",
   "role": {
     "id": "integer",
-    "roleName": "string"
+    "roleName": "string",
+    "description": "string",
+    "permissionsLevel": "integer",
+    "maxBuy": "integer"
   },
   "hireDate": "date",
   "address": "string",
@@ -845,16 +1250,10 @@ Retrieves all transactions.
 [
   {
     "id": "integer",
-    "customer": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
-    "employee": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
+    "customerId": "integer",
+    "customerName": "string",
+    "employeeId": "integer",
+    "employeeName": "string",
     "transactionDate": "date",
     "transactionType": "string", // enum: purchase, sale, pawn, redemption, forfeiture
     "totalAmount": "number",
@@ -862,16 +1261,21 @@ Retrieves all transactions.
     "interestRate": "number",
     "redemptionPrice": "number",
     "expiryDate": "date",
-    "relatedTransaction": {
-      "id": "integer"
-    },
+    "relatedTransactionId": "integer",
     "notes": "string",
     "items": [
       {
         "id": "integer",
-        "name": "string",
+        "itemId": "integer",
+        "itemName": "string",
         "description": "string",
-        "price": "number"
+        "price": "number",
+        "brand": "string",
+        "model": "string",
+        "serialNumber": "string",
+        "condition": "string",
+        "categoryId": "integer",
+        "askingPrice": "number"
       }
     ]
   }
@@ -891,16 +1295,10 @@ Retrieves a specific transaction by ID.
 ```json
 {
   "id": "integer",
-  "customer": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
-  "employee": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
+  "customerId": "integer",
+  "customerName": "string",
+  "employeeId": "integer",
+  "employeeName": "string",
   "transactionDate": "date",
   "transactionType": "string",
   "totalAmount": "number",
@@ -908,16 +1306,21 @@ Retrieves a specific transaction by ID.
   "interestRate": "number",
   "redemptionPrice": "number",
   "expiryDate": "date",
-  "relatedTransaction": {
-    "id": "integer"
-  },
+  "relatedTransactionId": "integer",
   "notes": "string",
   "items": [
     {
       "id": "integer",
-      "name": "string",
+      "itemId": "integer",
+      "itemName": "string",
       "description": "string",
-      "price": "number"
+      "price": "number",
+      "brand": "string",
+      "model": "string",
+      "serialNumber": "string",
+      "condition": "string",
+      "categoryId": "integer",
+      "askingPrice": "number"
     }
   ]
 }
@@ -939,16 +1342,10 @@ Retrieves all transactions for a specific customer.
 [
   {
     "id": "integer",
-    "customer": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
-    "employee": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
+    "customerId": "integer",
+    "customerName": "string",
+    "employeeId": "integer",
+    "employeeName": "string",
     "transactionDate": "date",
     "transactionType": "string",
     "totalAmount": "number",
@@ -956,16 +1353,21 @@ Retrieves all transactions for a specific customer.
     "interestRate": "number",
     "redemptionPrice": "number",
     "expiryDate": "date",
-    "relatedTransaction": {
-      "id": "integer"
-    },
+    "relatedTransactionId": "integer",
     "notes": "string",
     "items": [
       {
         "id": "integer",
-        "name": "string",
+        "itemId": "integer",
+        "itemName": "string",
         "description": "string",
-        "price": "number"
+        "price": "number",
+        "brand": "string",
+        "model": "string",
+        "serialNumber": "string",
+        "condition": "string",
+        "categoryId": "integer",
+        "askingPrice": "number"
       }
     ]
   }
@@ -988,16 +1390,10 @@ Retrieves all transactions of a specific type.
 [
   {
     "id": "integer",
-    "customer": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
-    "employee": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
+    "customerId": "integer",
+    "customerName": "string",
+    "employeeId": "integer",
+    "employeeName": "string",
     "transactionDate": "date",
     "transactionType": "string",
     "totalAmount": "number",
@@ -1005,16 +1401,21 @@ Retrieves all transactions of a specific type.
     "interestRate": "number",
     "redemptionPrice": "number",
     "expiryDate": "date",
-    "relatedTransaction": {
-      "id": "integer"
-    },
+    "relatedTransactionId": "integer",
     "notes": "string",
     "items": [
       {
         "id": "integer",
-        "name": "string",
+        "itemId": "integer",
+        "itemName": "string",
         "description": "string",
-        "price": "number"
+        "price": "number",
+        "brand": "string",
+        "model": "string",
+        "serialNumber": "string",
+        "condition": "string",
+        "categoryId": "integer",
+        "askingPrice": "number"
       }
     ]
   }
@@ -1037,16 +1438,10 @@ Retrieves all transactions within a specific date range.
 [
   {
     "id": "integer",
-    "customer": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
-    "employee": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
+    "customerId": "integer",
+    "customerName": "string",
+    "employeeId": "integer",
+    "employeeName": "string",
     "transactionDate": "date",
     "transactionType": "string",
     "totalAmount": "number",
@@ -1054,16 +1449,21 @@ Retrieves all transactions within a specific date range.
     "interestRate": "number",
     "redemptionPrice": "number",
     "expiryDate": "date",
-    "relatedTransaction": {
-      "id": "integer"
-    },
+    "relatedTransactionId": "integer",
     "notes": "string",
     "items": [
       {
         "id": "integer",
-        "name": "string",
+        "itemId": "integer",
+        "itemName": "string",
         "description": "string",
-        "price": "number"
+        "price": "number",
+        "brand": "string",
+        "model": "string",
+        "serialNumber": "string",
+        "condition": "string",
+        "categoryId": "integer",
+        "askingPrice": "number"
       }
     ]
   }
@@ -1084,16 +1484,10 @@ Retrieves all active pawns for a specific customer.
 [
   {
     "id": "integer",
-    "customer": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
-    "employee": {
-      "id": "integer",
-      "firstName": "string",
-      "lastName": "string"
-    },
+    "customerId": "integer",
+    "customerName": "string",
+    "employeeId": "integer",
+    "employeeName": "string",
     "transactionDate": "date",
     "transactionType": "pawn",
     "totalAmount": "number",
@@ -1105,9 +1499,16 @@ Retrieves all active pawns for a specific customer.
     "items": [
       {
         "id": "integer",
-        "name": "string",
+        "itemId": "integer",
+        "itemName": "string",
         "description": "string",
-        "price": "number"
+        "price": "number",
+        "brand": "string",
+        "model": "string",
+        "serialNumber": "string",
+        "condition": "string",
+        "categoryId": "integer",
+        "askingPrice": "number"
       }
     ]
   }
@@ -1154,16 +1555,10 @@ Creates a new purchase transaction (buying items from customer).
 ```json
 {
   "id": "integer",
-  "customer": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
-  "employee": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
+  "customerId": "integer",
+  "customerName": "string",
+  "employeeId": "integer",
+  "employeeName": "string",
   "transactionDate": "date",
   "transactionType": "purchase",
   "totalAmount": "number",
@@ -1171,162 +1566,16 @@ Creates a new purchase transaction (buying items from customer).
   "items": [
     {
       "id": "integer",
-      "name": "string",
-      "description": "string",
-      "price": "number"
-    }
-  ]
-}
-```
-- **Error Response**:
-  - **Code**: 400 BAD REQUEST
-  - **Content**: 
-```json
-{
-  "error": "string"
-}
-```
-  OR
-  - **Code**: 401 UNAUTHORIZED
-  - **Content**: 
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
-### Create Sale Transaction
-
-Creates a new sale transaction (selling items to customer).
-
-- **URL**: `/api/transactions/sale`
-- **Method**: `POST`
-- **Authorization**: Required (JWT Token)
-- **Request Body**:
-```json
-{
-  "customerId": "integer", // Optional
-  "items": [
-    {
       "itemId": "integer",
-      "sellingPrice": "number"
-    }
-  ],
-  "notes": "string"
-}
-```
-- **Success Response**:
-  - **Code**: 201 CREATED
-  - **Content**: Created TransactionDTO
-```json
-{
-  "id": "integer",
-  "customer": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
-  "employee": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
-  "transactionDate": "date",
-  "transactionType": "sale",
-  "totalAmount": "number",
-  "notes": "string",
-  "items": [
-    {
-      "id": "integer",
-      "name": "string",
+      "itemName": "string",
       "description": "string",
-      "price": "number"
-    }
-  ]
-}
-```
-- **Error Response**:
-  - **Code**: 400 BAD REQUEST
-  - **Content**: 
-```json
-{
-  "error": "string"
-}
-```
-  OR
-  - **Code**: 401 UNAUTHORIZED
-  - **Content**: 
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
-### Create Pawn Transaction
-
-Creates a new pawn transaction.
-
-- **URL**: `/api/transactions/pawn`
-- **Method**: `POST`
-- **Authorization**: Required (JWT Token)
-- **Request Body**:
-```json
-{
-  "customerId": "integer", // Optional if newCustomer is provided
-  "newCustomer": { // Optional if customerId is provided
-    "firstName": "string",
-    "lastName": "string",
-    "idType": "string", // enum: passport, driver_license, id_card, other
-    "idNumber": "string",
-    "doNotServe": "boolean"
-  },
-  "pawnDurationDays": "integer",
-  "interestRate": "number",
-  "items": [
-    {
-      "categoryId": "integer",
-      "name": "string",
-      "description": "string",
-      "serialNumber": "string",
+      "price": "number",
       "brand": "string",
       "model": "string",
+      "serialNumber": "string",
       "condition": "string",
-      "loanAmount": "number"
-    }
-  ],
-  "notes": "string"
-}
-```
-- **Success Response**:
-  - **Code**: 201 CREATED
-  - **Content**: Created TransactionDTO
-```json
-{
-  "id": "integer",
-  "customer": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
-  "employee": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
-  "transactionDate": "date",
-  "transactionType": "pawn",
-  "totalAmount": "number",
-  "pawnDurationDays": "integer",
-  "interestRate": "number",
-  "redemptionPrice": "number",
-  "expiryDate": "date",
-  "notes": "string",
-  "items": [
-    {
-      "id": "integer",
-      "name": "string",
-      "description": "string",
-      "price": "number"
+      "categoryId": "integer",
+      "askingPrice": "number"
     }
   ]
 }
@@ -1340,76 +1589,4 @@ Creates a new pawn transaction.
 }
 ```
   OR
-  - **Code**: 401 UNAUTHORIZED
-  - **Content**: 
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
-### Create Redemption Transaction
-
-Creates a new redemption transaction (customer redeeming pawned items).
-
-- **URL**: `/api/transactions/redemption`
-- **Method**: `POST`
-- **Authorization**: Required (JWT Token)
-- **Request Body**:
-```json
-{
-  "pawnTransactionId": "integer",
-  "notes": "string"
-}
-```
-- **Success Response**:
-  - **Code**: 201 CREATED
-  - **Content**: Created TransactionDTO
-```json
-{
-  "id": "integer",
-  "customer": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
-  "employee": {
-    "id": "integer",
-    "firstName": "string",
-    "lastName": "string"
-  },
-  "transactionDate": "date",
-  "transactionType": "redemption",
-  "totalAmount": "number",
-  "relatedTransaction": {
-    "id": "integer"
-  },
-  "notes": "string",
-  "items": [
-    {
-      "id": "integer",
-      "name": "string",
-      "description": "string",
-      "price": "number"
-    }
-  ]
-}
-```
-- **Error Response**:
-  - **Code**: 400 BAD REQUEST
-  - **Content**: 
-```json
-{
-  "error": "string"
-}
-```
-  OR
-  - **Code**: 401 UNAUTHORIZED
-  - **Content**: 
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
-Wykonał claude
+  - **Code**: 401

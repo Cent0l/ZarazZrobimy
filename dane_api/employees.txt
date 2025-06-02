@@ -105,6 +105,6 @@
         "address": "Narutowicza 44, Grudziądz",
         "phoneNumber": "512232444",
         "email": "p.wisniewski@lombard.pl",
-        "status": "inactive"
+        "status": "on_leave"
     }
 ]

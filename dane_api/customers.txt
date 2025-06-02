@@ -37,7 +37,7 @@
     },
     {
         "id": 8,
-        "firstName": "Kinga",
+        "firstName": "Kinga ",
         "lastName": "Budzich",
         "idType": "id_card",
         "idNumber": "DWD489123",
@@ -60,6 +60,24 @@
         "idType": "passport",
         "idNumber": "PA987654",
         "registrationDate": "2025-04-24",
+        "doNotServe": false
+    },
+    {
+        "id": 10,
+        "firstName": "Grzegorz",
+        "lastName": "Braun",
+        "idType": "passport",
+        "idNumber": "214Izrael",
+        "registrationDate": "2025-05-20",
+        "doNotServe": false
+    },
+    {
+        "id": 11,
+        "firstName": "Sławomir",
+        "lastName": "Mentzen",
+        "idType": "other",
+        "idNumber": "GR1LL",
+        "registrationDate": "2025-05-26",
         "doNotServe": false
     }
 ]

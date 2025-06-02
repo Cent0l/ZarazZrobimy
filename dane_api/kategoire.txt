@@ -1,224 +1,224 @@
 [
-  {
-    "id": 1,
-    "categoryName": "Elektronika",
-    "description": "Urządzenia elektroniczne różnego typu",
-    "parentCategoryId": null
-  },
-  {
-    "id": 2,
-    "categoryName": "Telefony i akcesoria",
-    "description": "Smartfony, telefony komórkowe i akcesoria do nich",
-    "parentCategoryId": 1
-  },
-  {
-    "id": 3,
-    "categoryName": "Telefony Apple",
-    "description": "iPhone i inne telefony marki Apple",
-    "parentCategoryId": 2
-  },
-  {
-    "id": 4,
-    "categoryName": "Telefony Samsung",
-    "description": "Telefony marki Samsung, seria Galaxy i inne",
-    "parentCategoryId": 2
-  },
-  {
-    "id": 5,
-    "categoryName": "Telefony innych marek",
-    "description": "Telefony marek innych niż Apple i Samsung",
-    "parentCategoryId": 2
-  },
-  {
-    "id": 6,
-    "categoryName": "Akcesoria do telefonów",
-    "description": "Ładowarki, etui, słuchawki i inne akcesoria",
-    "parentCategoryId": 2
-  },
-  {
-    "id": 7,
-    "categoryName": "Sprzęt AGD",
-    "description": "Sprzęt gospodarstwa domowego",
-    "parentCategoryId": 1
-  },
-  {
-    "id": 8,
-    "categoryName": "Duże AGD",
-    "description": "Lodówki, pralki, zmywarki",
-    "parentCategoryId": 7
-  },
-  {
-    "id": 9,
-    "categoryName": "Małe AGD",
-    "description": "Ekspresy, miksery, blendery, tostery",
-    "parentCategoryId": 7
-  },
-  {
-    "id": 10,
-    "categoryName": "Sprzęt RTV",
-    "description": "Telewizory, odtwarzacze, sprzęt audio",
-    "parentCategoryId": 1
-  },
-  {
-    "id": 11,
-    "categoryName": "Konsole i gry",
-    "description": "Konsole do gier, kontrolery, akcesoria i gry",
-    "parentCategoryId": 1
-  },
-  {
-    "id": 12,
-    "categoryName": "PlayStation",
-    "description": "Konsole, kontrolery i gry PlayStation",
-    "parentCategoryId": 11
-  },
-  {
-    "id": 13,
-    "categoryName": "Xbox",
-    "description": "Konsole, kontrolery i gry Xbox",
-    "parentCategoryId": 11
-  },
-  {
-    "id": 14,
-    "categoryName": "Nintendo",
-    "description": "Konsole, kontrolery i gry Nintendo",
-    "parentCategoryId": 11
-  },
-  {
-    "id": 17,
-    "categoryName": "Komputery i akcesoria",
-    "description": "Laptopy, komputery stacjonarne, monitory i akcesoria",
-    "parentCategoryId": 1
-  },
-  {
-    "id": 18,
-    "categoryName": "Biżuteria i zegarki",
-    "description": "Biżuteria, zegarki i akcesoria",
-    "parentCategoryId": null
-  },
-  {
-    "id": 19,
-    "categoryName": "Biżuteria złota",
-    "description": "Biżuteria wykonana ze złota",
-    "parentCategoryId": 18
-  },
-  {
-    "id": 20,
-    "categoryName": "Łańcuszki złote",
-    "description": "Złote łańcuszki różnych splotów",
-    "parentCategoryId": 19
-  },
-  {
-    "id": 21,
-    "categoryName": "Pierścionki złote",
-    "description": "Złote pierścionki i obrączki",
-    "parentCategoryId": 19
-  },
-  {
-    "id": 22,
-    "categoryName": "Bransoletki złote",
-    "description": "Złote bransoletki różnych wzorów",
-    "parentCategoryId": 19
-  },
-  {
-    "id": 23,
-    "categoryName": "Biżuteria srebrna",
-    "description": "Biżuteria wykonana ze srebra",
-    "parentCategoryId": 18
-  },
-  {
-    "id": 24,
-    "categoryName": "Zegarki",
-    "description": "Zegarki różnych marek",
-    "parentCategoryId": 18
-  },
-  {
-    "id": 25,
-    "categoryName": "Zegarki luksusowe",
-    "description": "Zegarki marek premium",
-    "parentCategoryId": 24
-  },
-  {
-    "id": 26,
-    "categoryName": "Zegarki sportowe",
-    "description": "Zegarki do zastosowań sportowych",
-    "parentCategoryId": 24
-  },
-  {
-    "id": 27,
-    "categoryName": "Smartwatche",
-    "description": "Inteligentne zegarki różnych marek",
-    "parentCategoryId": 24
-  },
-  {
-    "id": 28,
-    "categoryName": "Aparaty i sprzęt fotograficzny",
-    "description": "Aparaty fotograficzne, obiektywy i akcesoria",
-    "parentCategoryId": null
-  },
-  {
-    "id": 29,
-    "categoryName": "Aparaty cyfrowe",
-    "description": "Cyfrowe aparaty fotograficzne",
-    "parentCategoryId": 28
-  },
-  {
-    "id": 30,
-    "categoryName": "Obiektywy",
-    "description": "Obiektywy do aparatów fotograficznych",
-    "parentCategoryId": 28
-  },
-  {
-    "id": 31,
-    "categoryName": "Narzędzia",
-    "description": "Narzędzia ręczne i elektronarzędzia",
-    "parentCategoryId": null
-  },
-  {
-    "id": 32,
-    "categoryName": "Elektronarzędzia",
-    "description": "Wiertarki, szlifierki, piły elektryczne",
-    "parentCategoryId": 31
-  },
-  {
-    "id": 33,
-    "categoryName": "Narzędzia ręczne",
-    "description": "Młotki, klucze, śrubokręty",
-    "parentCategoryId": 31
-  },
-  {
-    "id": 34,
-    "categoryName": "Sprzęt sportowy",
-    "description": "Sprzęt i akcesoria sportowe",
-    "parentCategoryId": null
-  },
-  {
-    "id": 35,
-    "categoryName": "Rowery",
-    "description": "Rowery i akcesoria rowerowe",
-    "parentCategoryId": 34
-  },
-  {
-    "id": 36,
-    "categoryName": "Sprzęt fitness",
-    "description": "Sprzęt do ćwiczeń i fitness",
-    "parentCategoryId": 34
-  },
-  {
-    "id": 37,
-    "categoryName": "Instrumenty muzyczne",
-    "description": "Instrumenty muzyczne i akcesoria",
-    "parentCategoryId": null
-  },
-  {
-    "id": 38,
-    "categoryName": "Instrumenty strunowe",
-    "description": "Gitary, skrzypce i inne instrumenty strunowe",
-    "parentCategoryId": 37
-  },
-  {
-    "id": 39,
-    "categoryName": "Instrumenty klawiszowe",
-    "description": "Keyboardy, syntezatory, pianina",
-    "parentCategoryId": 37
-  }
+    {
+        "id": 1,
+        "categoryName": "Elektronika",
+        "description": "Urządzenia elektroniczne różnego typu",
+        "parentCategoryId": null
+    },
+    {
+        "id": 2,
+        "categoryName": "Telefony i akcesoria",
+        "description": "Smartfony, telefony komórkowe i akcesoria do nich",
+        "parentCategoryId": 1
+    },
+    {
+        "id": 3,
+        "categoryName": "Telefony Apple",
+        "description": "iPhone i inne telefony marki Apple",
+        "parentCategoryId": 2
+    },
+    {
+        "id": 4,
+        "categoryName": "Telefony Samsung",
+        "description": "Telefony marki Samsung, seria Galaxy i inne",
+        "parentCategoryId": 2
+    },
+    {
+        "id": 5,
+        "categoryName": "Telefony innych marek",
+        "description": "Telefony marek innych niż Apple i Samsung",
+        "parentCategoryId": 2
+    },
+    {
+        "id": 6,
+        "categoryName": "Akcesoria do telefonów",
+        "description": "Ładowarki, etui, słuchawki i inne akcesoria",
+        "parentCategoryId": 2
+    },
+    {
+        "id": 7,
+        "categoryName": "Sprzęt AGD",
+        "description": "Sprzęt gospodarstwa domowego",
+        "parentCategoryId": 1
+    },
+    {
+        "id": 8,
+        "categoryName": "Duże AGD",
+        "description": "Lodówki, pralki, zmywarki",
+        "parentCategoryId": 7
+    },
+    {
+        "id": 9,
+        "categoryName": "Małe AGD",
+        "description": "Ekspresy, miksery, blendery, tostery",
+        "parentCategoryId": 7
+    },
+    {
+        "id": 10,
+        "categoryName": "Sprzęt RTV",
+        "description": "Telewizory, odtwarzacze, sprzęt audio",
+        "parentCategoryId": 1
+    },
+    {
+        "id": 11,
+        "categoryName": "Konsole i gry",
+        "description": "Konsole do gier, kontrolery, akcesoria i gry",
+        "parentCategoryId": 1
+    },
+    {
+        "id": 12,
+        "categoryName": "PlayStation",
+        "description": "Konsole, kontrolery i gry PlayStation",
+        "parentCategoryId": 11
+    },
+    {
+        "id": 13,
+        "categoryName": "Xbox",
+        "description": "Konsole, kontrolery i gry Xbox",
+        "parentCategoryId": 11
+    },
+    {
+        "id": 14,
+        "categoryName": "Nintendo",
+        "description": "Konsole, kontrolery i gry Nintendo",
+        "parentCategoryId": 11
+    },
+    {
+        "id": 17,
+        "categoryName": "Komputery i akcesoria",
+        "description": "Laptopy, komputery stacjonarne, monitory i akcesoria",
+        "parentCategoryId": 1
+    },
+    {
+        "id": 18,
+        "categoryName": "Biżuteria i zegarki",
+        "description": "Biżuteria, zegarki i akcesoria",
+        "parentCategoryId": null
+    },
+    {
+        "id": 19,
+        "categoryName": "Biżuteria złota",
+        "description": "Biżuteria wykonana ze złota",
+        "parentCategoryId": 18
+    },
+    {
+        "id": 20,
+        "categoryName": "Łańcuszki złote",
+        "description": "Złote łańcuszki różnych splotów",
+        "parentCategoryId": 19
+    },
+    {
+        "id": 21,
+        "categoryName": "Pierścionki złote",
+        "description": "Złote pierścionki i obrączki",
+        "parentCategoryId": 19
+    },
+    {
+        "id": 22,
+        "categoryName": "Bransoletki złote",
+        "description": "Złote bransoletki różnych wzorów",
+        "parentCategoryId": 19
+    },
+    {
+        "id": 23,
+        "categoryName": "Biżuteria srebrna",
+        "description": "Biżuteria wykonana ze srebra",
+        "parentCategoryId": 18
+    },
+    {
+        "id": 24,
+        "categoryName": "Zegarki",
+        "description": "Zegarki różnych marek",
+        "parentCategoryId": 18
+    },
+    {
+        "id": 25,
+        "categoryName": "Zegarki luksusowe",
+        "description": "Zegarki marek premium",
+        "parentCategoryId": 24
+    },
+    {
+        "id": 26,
+        "categoryName": "Zegarki sportowe",
+        "description": "Zegarki do zastosowań sportowych",
+        "parentCategoryId": 24
+    },
+    {
+        "id": 27,
+        "categoryName": "Smartwatche",
+        "description": "Inteligentne zegarki różnych marek",
+        "parentCategoryId": 24
+    },
+    {
+        "id": 28,
+        "categoryName": "Aparaty i sprzęt fotograficzny",
+        "description": "Aparaty fotograficzne, obiektywy i akcesoria",
+        "parentCategoryId": null
+    },
+    {
+        "id": 29,
+        "categoryName": "Aparaty cyfrowe",
+        "description": "Cyfrowe aparaty fotograficzne",
+        "parentCategoryId": 28
+    },
+    {
+        "id": 30,
+        "categoryName": "Obiektywy",
+        "description": "Obiektywy do aparatów fotograficznych",
+        "parentCategoryId": 28
+    },
+    {
+        "id": 31,
+        "categoryName": "Narzędzia",
+        "description": "Narzędzia ręczne i elektronarzędzia",
+        "parentCategoryId": null
+    },
+    {
+        "id": 32,
+        "categoryName": "Elektronarzędzia",
+        "description": "Wiertarki, szlifierki, piły elektryczne",
+        "parentCategoryId": 31
+    },
+    {
+        "id": 33,
+        "categoryName": "Narzędzia ręczne",
+        "description": "Młotki, klucze, śrubokręty",
+        "parentCategoryId": 31
+    },
+    {
+        "id": 34,
+        "categoryName": "Sprzęt sportowy",
+        "description": "Sprzęt i akcesoria sportowe",
+        "parentCategoryId": null
+    },
+    {
+        "id": 35,
+        "categoryName": "Rowery",
+        "description": "Rowery i akcesoria rowerowe",
+        "parentCategoryId": 34
+    },
+    {
+        "id": 36,
+        "categoryName": "Sprzęt fitness",
+        "description": "Sprzęt do ćwiczeń i fitness",
+        "parentCategoryId": 34
+    },
+    {
+        "id": 37,
+        "categoryName": "Instrumenty muzyczne",
+        "description": "Instrumenty muzyczne i akcesoria",
+        "parentCategoryId": null
+    },
+    {
+        "id": 38,
+        "categoryName": "Instrumenty strunowe",
+        "description": "Gitary, skrzypce i inne instrumenty strunowe",
+        "parentCategoryId": 37
+    },
+    {
+        "id": 39,
+        "categoryName": "Instrumenty klawiszowe",
+        "description": "Keyboardy, syntezatory, pianina",
+        "parentCategoryId": 37
+    }
 ]
